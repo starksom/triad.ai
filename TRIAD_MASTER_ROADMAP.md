@@ -16,7 +16,7 @@ Establishing the bare minimum requirements for the project to be adopted, reprod
 ---
 
 ## Phase 2: Competitive Parity (Active Development)
-To eliminate gaps compared to modern frameworks (CrewAI, LangGraph, Ruflo), `triad.ai` must implement the following 18 technical pillars:
+To eliminate gaps compared to modern frameworks (CrewAI, LangGraph, Ruflo), `triad.ai` must implement the following 19 technical pillars:
 
 ### 1. Agent Execution Engine
 Provide a formal programmatic abstraction for agents (`name`, `role`, `model`, `instructions`, `run()`). Fully support specialized types: **Generator**, **Critic**, **Verifier**, and **Arbiter**.
@@ -79,6 +79,12 @@ Publish official adapters/actions for **GitHub Actions** and **GitLab CI** enabl
 
 ### 17. Developer Experience (SDKs)
 Release formal programmatic SDKs for **Python** and **TypeScript** (npm/pypi packages) accompanied by rich documentation and template repositories.
+
+### 18. State Monitoring Dashboard
+Visual interface (web or TUI) displaying the current pipeline phase, transition history, individual agent logs, and cycle metrics.
+
+### 19. Persistent Cross-Session Memory
+Version controlled `CONTEXT_STATE.md` linked to git commits, establishing a complete and accessible historical log of architectural decisions for new team members.
 
 ---
 
