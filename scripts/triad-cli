@@ -6,35 +6,85 @@
 
 COMMAND=$1
 
+VERSION="1.0.0"
+
 case "$COMMAND" in
   init)
-    echo "🚀 Initializing Triad Pipeline..."
-    mkdir -p .agent/workflows docs prompts skills
+    echo "[INIT] Initializing Triad Pipeline..."
+    mkdir -p .agent/workflows docs prompts skills templates
     touch docs/CONTEXT_STATE.md docs/roadmap.md docs/architecture.md CHANGELOG.md
-    echo "✅ Triad ecosystem scaffolded successfully."
+    echo "[OK] Triad ecosystem scaffolded successfully."
     ;;
   run)
-    echo "🔍 Reading current CONTEXT_STATE.md..."
+    echo "[STATE] Reading current CONTEXT_STATE.md..."
     if [ -f "docs/CONTEXT_STATE.md" ]; then
-      cat docs/CONTEXT_STATE.md | grep -E "Phase|Assignee|Task"
+      grep -E "Phase|Assignee|Task" docs/CONTEXT_STATE.md
     else
-      echo "❌ CONTEXT_STATE.md not found. Run 'triad init' first."
+      echo "[ERROR] CONTEXT_STATE.md not found. Run 'triad init' first."
       exit 1
     fi
     ;;
   validate)
-    echo "🛡️ Engaging Antigravity Validation Protocol..."
-    # Placeholder for actual test runner
+    echo "[VALIDATE] Engaging Antigravity Validation Protocol..."
+    if [ -f "docs/CONTEXT_STATE.md" ]; then
+      PHASE=$(grep -oP '(?<=\*\*\[)[A-Z_]+(?=\]\*\*)' docs/CONTEXT_STATE.md | head -1)
+      if [ "$PHASE" != "VALIDATION" ]; then
+        echo "[WARN] CONTEXT_STATE.md phase is [$PHASE], expected [VALIDATION]."
+      fi
+    fi
     echo "Running local linters and tests..."
     if npm test >/dev/null 2>&1; then
-       echo "✅ Validation PASSED."
+       echo "[OK] Validation PASSED."
     else
-       echo "⛔ Validation FAILED. Return to Codex."
+       echo "[FAIL] Validation FAILED. Return to Codex."
        exit 1
     fi
     ;;
+  roadmap)
+    echo "[ROADMAP] Triad Master Roadmap Status"
+    if [ -f "TRIAD_MASTER_ROADMAP.md" ]; then
+      echo ""
+      echo "--- Phase 1: Strategic Foundation ---"
+      grep -c "\[x\]" TRIAD_MASTER_ROADMAP.md | xargs -I{} echo "  Completed items: {}"
+      echo ""
+      echo "--- Phase 2: Competitive Parity (Active) ---"
+      grep "^### " TRIAD_MASTER_ROADMAP.md | sed 's/### /  /g'
+      echo ""
+      echo "--- Phase 3: Strategic Differentiation ---"
+      grep "BMAD\|Web Quality\|Snyk\|Shift-Left" TRIAD_MASTER_ROADMAP.md | head -3 | sed 's/^/  /g'
+    else
+      echo "[ERROR] TRIAD_MASTER_ROADMAP.md not found."
+      exit 1
+    fi
+    ;;
+  status)
+    echo "[STATUS] Triad Pipeline Overview"
+    echo ""
+    $0 run
+    echo ""
+    $0 roadmap
+    ;;
+  --version|-v)
+    echo "triad-cli v$VERSION"
+    ;;
+  --help|-h)
+    echo "triad-cli v$VERSION - Triad Pipeline Orchestration Tool"
+    echo ""
+    echo "Usage: triad <command>"
+    echo ""
+    echo "Commands:"
+    echo "  init       Scaffold the Triad Pipeline directory structure"
+    echo "  run        Display current pipeline phase and assignee"
+    echo "  validate   Run Antigravity validation (linters + tests)"
+    echo "  roadmap    Display Master Roadmap pillar status"
+    echo "  status     Combined view of pipeline state and roadmap"
+    echo ""
+    echo "Flags:"
+    echo "  --version  Display CLI version"
+    echo "  --help     Display this help message"
+    ;;
   *)
-    echo "Usage: triad {init|run|validate}"
+    echo "Usage: triad {init|run|validate|roadmap|status|--help|--version}"
     exit 1
     ;;
 esac
