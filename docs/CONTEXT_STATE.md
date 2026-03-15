@@ -1,23 +1,23 @@
-# Ponto de Sincronização de Contexto (Context State)
+# Context Synchronization Point (Context State)
 
-Este arquivo é a "memória curta" do projeto. Ele serve como o bastão de revezamento entre o **Claude Code**, o **Codex** e o **Antigravity**.
-Nenhuma IA pode iniciar seu trabalho sem ler este arquivo e entender exatamente em qual fase o fluxo de desenvolvimento se encontra.
-
----
-
-## 🚦 Fase Atual (Status do Pipeline)
-> **[PLANEJAMENTO]** 
-
-*(Opções válidas: `[PLANEJAMENTO]`, `[DESENVOLVIMENTO]`, `[VALIDAÇÃO]`, `[AUDITORIA_RELEASE]`)*
+This file acts as the project's "short-term memory". It serves as the transition baton between **Claude Code**, **Codex**, and **Antigravity**.
+No AI agent may initiate its work without reading this file and understanding exactly which phase the development flow is currently in.
 
 ---
 
-## 🎯 Tarefa / Foco Atual
-**Descrição:** O que está sendo feito neste exato momento e qual a tarefa ativa.
-- **Tarefa:** N/A (Aguardando planejamento)
-- **Responsável Atual:** Claude Code
+## Current Phase (Pipeline Status)
+> **[PLANNING]** 
+
+*(Valid options: `[PLANNING]`, `[DEVELOPMENT]`, `[VALIDATION]`, `[RELEASE_AUDIT]`)*
 
 ---
 
-## 💬 Mensagem de Handoff (De quem passou o bastão)
-*"Projeto recém-inicializado. Claude Code deve começar o planejamento."*
+## Current Task / Focus
+**Description:** What is being done at this exact moment and the active task.
+- **Task:** N/A (Awaiting planning)
+- **Current Assignee:** Claude Code
+
+---
+
+## Handoff Message (From previous assignee)
+"Project newly initialized. Claude Code must begin the planning phase."

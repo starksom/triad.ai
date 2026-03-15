@@ -1,27 +1,27 @@
-# [Nome do Projeto]
+# [Project Name]
 
-## Objetivo
-[Resumo de 3–5 linhas explicando o problema que o projeto resolve e para quem.]
+## Objective
+[Brief 3–5 line summary outlining the problem this project solves and its target audience.]
 
-## Stack principal
-- Linguagem: [Ex: TypeScript]
-- Frameworks: [Ex: Node.js, React]
-- Banco / Storage: [Ex: PostgreSQL]
-- Outras dependências críticas: [Ex: Redis]
+## Primary Stack
+- Language: [e.g., TypeScript]
+- Frameworks: [e.g., Node.js, React]
+- Database / Storage: [e.g., PostgreSQL]
+- Critical Dependencies: [e.g., Redis]
 
-## Principais entregas
-- [ ] Entrega 1 (alto nível)
-- [ ] Entrega 2
+## Key Deliverables
+- [ ] Deliverable 1 (high-level)
+- [ ] Deliverable 2
 
-## Requisitos funcionais (resumo)
-- RF-01: [Descrição]
-- RF-02: [Descrição]
+## Functional Requirements (Summary)
+- FR-01: [Description]
+- FR-02: [Description]
 
-## Requisitos não funcionais (resumo)
-- RNF-01: Segurança (autenticação, autorização, logging, etc.)
-- RNF-02: Performance, escalabilidade, etc.
+## Non-Functional Requirements (Summary)
+- NFR-01: Security (authentication, authorization, logging, etc.)
+- NFR-02: Performance, scalability, etc.
 
-## Documentação detalhada
+## Detailed Documentation
 - [Roadmap](docs/roadmap.md)
-- [Arquitetura](docs/architecture.md)
+- [Architecture](docs/architecture.md)
 - [Changelog](CHANGELOG.md)

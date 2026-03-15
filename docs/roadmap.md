@@ -1,13 +1,13 @@
 # Roadmap
 
-Este documento contém o backlog viável do projeto, apenas com o que **ainda não foi entregue**. 
-Sempre que uma tarefa for concluída, ela deve ser movida para a seção de funcionalidades implementadas em `architecture.md` e registrada no `CHANGELOG.md`.
+This document contains the viable project backlog, specifically items that **have not yet been delivered**.
+Whenever a task is completed, it must be moved to the implemented features section in `architecture.md` and registered in `CHANGELOG.md`.
 
-## Próxima release (vX.Y.Z planejada)
-- [ ] RF-01: [Descrição da tarefa pendente]
-- [ ] RF-02: [Descrição da tarefa pendente]
-- [ ] RNF-01: [Descrição da tarefa pendente]
+## Next Release (Planned vX.Y.Z)
+- [ ] FR-01: [Pending task description]
+- [ ] FR-02: [Pending task description]
+- [ ] NFR-01: [Pending task description]
 
-## Futuro
-- [ ] [Ideia para o futuro 1]
-- [ ] [Ideia para o futuro 2]
+## Future Scope
+- [ ] [Future Idea 1]
+- [ ] [Future Idea 2]

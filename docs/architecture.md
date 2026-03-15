@@ -1,22 +1,22 @@
-# Arquitetura Atual
+# Current Architecture
 
-## Visão geral
-[Descrição de alto nível da arquitetura (camadas, serviços, integrações externas).]
+## Overview
+[High-level description of the architecture, layers, services, and external integrations.]
 
-## Requisitos funcionais implementados
-*(Mova para cá os RFs concluídos do roadmap)*
-- RF-00: [Descrição e como foi implementado]
+## Implemented Functional Requirements
+*(Move completed FRs from the roadmap here)*
+- FR-00: [Description and implementation details]
 
-## Requisitos não funcionais atendidos
-- RNF-00 (Segurança): [Como foi implementado]
-- RNF-01 (Performance): [Como foi otimizado]
+## Addressed Non-Functional Requirements
+- NFR-00 (Security): [Implementation details]
+- NFR-01 (Performance): [Optimization details]
 
-## Componentes principais
-- **Serviço/Módulo A**: responsabilidades, tecnologias, dependências, fluxos críticos.
-- **Serviço/Módulo B**: responsabilidades...
+## Main Components
+- **Service/Module A**: Responsibilities, technologies, dependencies, critical flows.
+- **Service/Module B**: Responsibilities...
 
-## Decisões arquiteturais relevantes
-- ADR-001: [Decisão] justificada por [Motivo].
+## Relevant Architectural Decisions
+- ADR-001: [Decision] justified by [Reason].
 
-## Considerações de segurança e IAM
-- [Descrição de modelos de permissão, segregação, etc.]
+## Security and IAM Considerations
+- [Description of permission models, segregation of duties, zero trust policies, etc.]

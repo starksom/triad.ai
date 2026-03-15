@@ -1,24 +1,24 @@
 # Global Skills Context
 
-Para maximizar a inteligência e o reaproveitamento de conhecimento entre Claude Code, Codex e Antigravity, este projeto incorpora os princípios de "Multi-Skills" baseados nos seguintes repositórios de referência:
+To maximize intelligence and knowledge sharing among Claude Code, Codex, and Antigravity, this project incorporates "Multi-Skills" principles based on the following reference repositories:
 
 ## 1. Planning with Files & BMAD / Ralph Methods
-**Conceito Base:** Agentes não devem confiar na própria memória de contexto volátil. Toda decisão, requisito e passo a passo deve ser lido, validado e escrito em arquivos Markdown (`roadmap.md`, `architecture.md`).
-- **Ação Obrigatória:** Antes de qualquer modificação, o agente DEVE ler a documentação de arquitetura e o plano.
-- **Estruturação:** O raciocínio deve ser explícito ("step-by-step") e declarativo.
+**Core Concept:** Agents must not rely on their own volatile context memory. Every decision, requirement, and step-by-step instruction must be read from, validated against, and written to Markdown files (`roadmap.md`, `architecture.md`, `CONTEXT_STATE.md`).
+- **Mandatory Action:** Before making any modifications, the agent MUST read the architecture documentation and the active plan.
+- **Structure:** Reasoning should be explicit ("step-by-step") and declarative.
 
 ## 2. Web Quality Skills (addyosmani)
-**Conceito Base:** Foco absoluto em UX responsivo e performance.
-- **Regras de UX (Codex e Antigravity):**
-  - **Tema Obrigatório:** Apenas Temas Claros (Light Theme), a não ser que explicitamente pedido o contrário.
-  - **Responsividade Obrigatória:** A interface deve adaptar-se perfeitamente a aspect ratios de 21:9 (Ultrawide), 16:9 (Desktop Padrão) e 4:3 (Tablets tradicionais).
-  - **Mobile-First Vertical:** O layout deve prever usabilidade em iPhones, iPads e Androids na posição vertical de forma nativa.
+**Core Concept:** Absolute focus on responsive UX and performance.
+- **UX Rules (Codex and Antigravity):**
+  - **Mandatory Theme:** Only Light Themes are permitted unless explicitly requested otherwise.
+  - **Mandatory Responsiveness:** The interface must adapt perfectly to 21:9 (Ultrawide), 16:9 (Standard Desktop), and 4:3 (Traditional Tablets) aspect ratios.
+  - **Mobile-First Vertical:** The layout must natively support usability on iPhones, iPads, and Android devices in vertical orientation.
 
 ## 3. Security & Snyk Studio Recipes
-**Conceito Base:** Shift-left security e OWASP Top 10 por default.
-- **Regras Confidenciais:** Nenhum hardcoded secret é permitido.
-- **Validação:** Antigravity e Claude Code são responsáveis por checar injection de SQL/NoSQL, XSS, CSRF, e falhas de CORS durante a auditoria formal.
+**Core Concept:** Shift-left security and OWASP Top 10 by default.
+- **Confidentiality Rules:** No hardcoded secrets are permitted.
+- **Validation:** Antigravity and Claude Code are responsible for checking for SQL/NoSQL injections, XSS, CSRF, and CORS vulnerabilities during formal audits.
 
 ## 4. Git PR & Lifecycle Skills
-**Conceito Base:** O fluxo de features termina com uma decisão executiva do usuário final.
-- **Decisão de Commit:** O Claude Code prepara a revisão, mas não toma a ação destrutiva de merge/commit em main sem a validação humana final (a não ser automatizado no workflow).
+**Core Concept:** The feature flow concludes with an executive decision by the end-user.
+- **Commit Decision:** Claude Code prepares the review but does not execute destructive actions like merge/commit to main without final human validation (unless automated within the workflow).

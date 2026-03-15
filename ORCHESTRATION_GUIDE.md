@@ -1,59 +1,52 @@
-# Guia de Orquestração - Triad Pipeline
+# Orchestration Guide - Triad Pipeline
 
-Este documento explica como você, o Desenvolvedor/Tech Lead, deve orquestrar a interação entre o **Claude Code**, o **Codex** e o **Antigravity** para garantir um fluxo de trabalho sem atritos.
+This document explains how you, the Developer/Tech Lead, must orchestrate the interaction between **Claude Code**, **Codex**, and **Antigravity** to ensure a frictionless workflow.
 
-Os três agentes não se falam diretamente. Eles se comunicam através da leitura e escrita nos seguintes documentos base:
+The three agents do not communicate directly. They communicate by reading and writing to the following foundational documents:
 - `README.md`
 - `docs/roadmap.md`
 - `docs/architecture.md`
 - `CHANGELOG.md`
 
-Para manter a ordem, siga estritamente o fluxo abaixo, passando o bastão de um agente para o outro no momento certo.
+To maintain order, strictly follow the flow below, passing the baton from one agent to the next at the precise moment.
 
 ---
 
-## 🧠 Skills Globais, Guardrails e Context State
-Para eficiência máxima (BMAD/Ralph, Snyk Sec, Web Quality), leia o arquivo `skills/GLOBAL_SKILLS.md`.
+## Global Skills, Guardrails, and Context State
+For maximum efficiency (BMAD/Ralph, Snyk Sec, Web Quality), read the file `skills/GLOBAL_SKILLS.md`.
 
-**A Ficha de Transação (O Bastão):**
-Nenhum agente começa a trabalhar sem ler e depois atualizar o arquivo `docs/CONTEXT_STATE.md`. Este arquivo diz qual fase estamos (`[PLANEJAMENTO]`, `[DESENVOLVIMENTO]`, `[VALIDAÇÃO]`, etc) e quem é o responsável atual para evitar confusão de memória.
+**The Transaction Token (The Baton):**
+No agent begins work without reading and subsequently updating the file `docs/CONTEXT_STATE.md`. This file dictates our current phase (`[PLANNING]`, `[DEVELOPMENT]`, `[VALIDATION]`, etc.) and the current assignee to prevent context or memory confusion.
 
 **Guardrails:**
-- **Claude:** Apenas planeja, assume papéis de PO/InfoSec/Arquiteto. Não escreve código. Quando termina, atualiza o `CONTEXT_STATE.md` para Fase de Desenvolvimento e manda para o Codex.
-- **Codex:** Squad Leader. Apenas coda, cria testes e resolve CSS responsivo (Mobile-first vertical, Light Theme). Não decide versão. Quando termina, atualiza o `CONTEXT_STATE.md` para Fase de Validação e manda para o Antigravity.
-- **Antigravity:** Tech Lead absoluto. Testa na máquina. Se houver erro de Testes/Responsividade/Segurança, ele **rejeita**, altera o `CONTEXT_STATE.md` de volta para o Codex. Se aprova, atualiza documentos.
+- **Claude:** Plans only, assumes PO/InfoSec/Architect roles. Does not write code. Upon completion, updates `CONTEXT_STATE.md` to the Development Phase and hands off to Codex.
+- **Codex:** Squad Leader. Only writes code, creates tests, and resolves responsive CSS (Mobile-first vertical, Light Theme). Does not decide versioning. Upon completion, updates `CONTEXT_STATE.md` to the Validation Phase and hands off to Antigravity.
+- **Antigravity:** Absolute Tech Lead. Tests on the local machine. If Tests/Responsiveness/Security fail, it **rejects** and reverts `CONTEXT_STATE.md` back to Codex. If approved, it updates documentation.
 
 ---
 
-## 🔄 O Ciclo de Vida de uma Feature
+## The Lifecycle of a Feature
 
-### 1️⃣ Fase de Planejamento (Claude Code - O Product Owner)
-1. Abra o **Claude Code** com a instrução `plan_project` de `prompts/claude_code.md`.
-2. O Claude Code vai gerar Requisitos, preencher o roadmap, verificar segurança de escopo e pausar.
-3. **Pausa:** Vá para o Codex.
+### Phase 1: Planning (Claude Code - The Product Owner)
+1. Open **Claude Code** with the `plan_project` instruction from `prompts/claude_code.md`.
+2. Claude Code will generate Requirements, populate the roadmap, verify scope security, and pause.
+3. **Pause:** Proceed to Codex.
 
-### 2️⃣ Fase de Implementação (Codex - O Squad Leader/Dev)
-1. No seu IDE, abra o **Codex** com a instrução `implement_task` de `prompts/codex.md`.
-2. O Codex aplicará seus conhecimentos em UX responsivo avançado (21:9, Mobile iPhone/iPad, Light theme) e codificará exatamente a tarefa.
-3. **Pausa:** Chame o Antigravity para testar.
+### Phase 2: Implementation (Codex - The Squad Leader/Dev)
+1. In your IDE, open **Codex** with the `implement_task` instruction from `prompts/codex.md`.
+2. Codex will apply its advanced responsive UX knowledge (21:9, Mobile iPhone/iPad, Light theme) and code the task exactly as specified.
+3. **Pause:** Call Antigravity for testing.
 
-### 3️⃣ Fase de Validação e Gatekeeper (Antigravity - O Tech Lead)
-1. Chame-me no seu terminal enviando `/triad_feature_cycle Valide a tarefa [Nome]`.
-2. Eu roda testes e linters:
-   - **ERRO:** Eu te enviarei o log exato e mandarei você voltar à Fase 2 (Codex) para consertar.
-   - **SUCESSO:** Eu alterarei os documentos (`Roadmap`, `Architecture`, `Changelog`).
+### Phase 3: Validation and Gatekeeper (Antigravity - The Tech Lead)
+1. Ping me in your terminal by sending `/triad_feature_cycle Validate the task [Name]`.
+2. I will run tests and linters:
+   - **ERROR:** I will send you the exact log and instruct you to return to Phase 2 (Codex) for a fix.
+   - **SUCCESS:** I will update the documents (`Roadmap`, `Architecture`, `Changelog`).
 
-### 4️⃣ Fase de Auditoria Final de Release (Claude Code)
-1. Quando Roadmap estiver em zero itens, chame o **Claude Code** com a instrução `audit_implementation`.
-2. O Claude avalia em altíssimo nível se tudo atende as regras de negócio e versionamento. Ele emite um relatório sumário.
+### Phase 4: Final Release Audit (Claude Code)
+1. When the Roadmap reaches zero items, call **Claude Code** with the `audit_implementation` instruction.
+2. Claude evaluates at a very high level whether everything meets the business rules and versioning requirements. It issues a summary report.
 
-### 5️⃣ Fase de Decisão de Commit (Usuário)
-1. Como passo final, o Claude devolverá a responsabilidade "Decisão de Merge/Commit" para você.
-2. Você pode aprovar ("git commit -m 'release'") ou mandar voltar ao planejamento se achar que faltou algo crítico!
-
----
-
-## 🚫 Dicas e Limites Críticos
-- **Nunca peça para o Codex atualizar o Roadmap ou o Changelog.** Ele foi proibido de fazer isso nos prompts para evitar sobreposição. Isso é trabalho do Antigravity.
-- **Nunca peça para o Claude Code escrever código de produção.** Ele desenha os blocos e checa a segurança de alto nível.
-- **Não ignore as Regras de Parada (Handoffs).** Se um agente pedir para você ir para o outro, obedeça. Isso garante que testes rodem antes das coisas serem documentadas, e que a documentação seja atualizada antes que códigos novos sejam pensados.
+### Phase 5: Commit Decision (User)
+1. As the final step, Claude will return the "Decision to Merge/Commit" responsibility to you.
+2. You can approve ("git commit -m 'release'") or send it back to planning if you believe something critical was missed.
