@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# triad-cli
+# Minimal CLI for initializing and interacting with the Triad Pipeline
+# Usage: triad init | triad run | triad validate
+
+COMMAND=$1
+
+case "$COMMAND" in
+  init)
+    echo "🚀 Initializing Triad Pipeline..."
+    mkdir -p .agent/workflows docs prompts skills
+    touch docs/CONTEXT_STATE.md docs/roadmap.md docs/architecture.md CHANGELOG.md
+    echo "✅ Triad ecosystem scaffolded successfully."
+    ;;
+  run)
+    echo "🔍 Reading current CONTEXT_STATE.md..."
+    if [ -f "docs/CONTEXT_STATE.md" ]; then
+      cat docs/CONTEXT_STATE.md | grep -E "Phase|Assignee|Task"
+    else
+      echo "❌ CONTEXT_STATE.md not found. Run 'triad init' first."
+      exit 1
+    fi
+    ;;
+  validate)
+    echo "🛡️ Engaging Antigravity Validation Protocol..."
+    # Placeholder for actual test runner
+    echo "Running local linters and tests..."
+    if npm test >/dev/null 2>&1; then
+       echo "✅ Validation PASSED."
+    else
+       echo "⛔ Validation FAILED. Return to Codex."
+       exit 1
+    fi
+    ;;
+  *)
+    echo "Usage: triad {init|run|validate}"
+    exit 1
+    ;;
+esac

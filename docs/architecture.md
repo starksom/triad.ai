@@ -1,19 +1,16 @@
 # Current Architecture
 
 ## Overview
-[High-level description of the architecture, layers, services, and external integrations.]
+`triad.ai` is a Multi-Agent Orchestration Framework designed to scale software engineering through isolated AI roles interacting via a shared file-based state machine (`CONTEXT_STATE.md`).
 
 ## Implemented Functional Requirements
-*(Move completed FRs from the roadmap here)*
-- FR-00: [Description and implementation details]
-
-## Addressed Non-Functional Requirements
-- NFR-00 (Security): [Implementation details]
-- NFR-01 (Performance): [Optimization details]
+- FR-01 (Orchestration Loop): Seamless handoff between Claude Code, Codex, and Antigravity.
+- FR-02 (CLI Integration): The `triad-cli` tool scaffolds and tracks the state of the project. Commands: `init`, `run`, `validate`.
 
 ## Main Components
-- **Service/Module A**: Responsibilities, technologies, dependencies, critical flows.
-- **Service/Module B**: Responsibilities...
+- **Agent Prompts (`prompts/`)**: Strict system instructions constraining each AI to its role (PO, Squad Leader, Tech Lead).
+- **Core State Token (`docs/CONTEXT_STATE.md`)**: The volatile memory module coordinating who is acting in the current Phase.
+- **Triad CLI (`scripts/triad-cli`)**: A bash utility acting as a helper interface to bootstrap `.agent/` and read the state.
 
 ## Relevant Architectural Decisions
 - ADR-001: [Decision] justified by [Reason].
