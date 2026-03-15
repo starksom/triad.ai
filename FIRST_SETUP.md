@@ -65,8 +65,8 @@ The three agents operate ideally when provided with the explicit constraints of 
 
 **For Claude Code:**
 1. Open Claude Code (or the Claude 3.5 Sonnet / Opus web interface).
-2. Open the file `prompts/claude_code.md`.
-3. Copy the "System Prompt" (the main text block) and paste it into the chat, instructing: *"Assume this persona and plan my new project, which will be an [App XYZ]"*.
+2. The `CLAUDE.md` file at the root of this repository will be automatically loaded by Claude Code, injecting the Triad Pipeline instructions. No manual prompt injection is required.
+3. If using a web interface without auto-injection, open `prompts/claude_code.md` and copy the System Prompt into the chat, instructing: *"Assume this persona and plan my new project, which will be an [App XYZ]"*.
 
 **For Codex (In your IDE):**
 1. With your cursor in the editor, invoke Codex's code generation.
@@ -87,5 +87,8 @@ Always demand that the very first action of any agent is to **READ the file `doc
 1. **Claude** plans and updates `CONTEXT_STATE.md`, pointing to Codex.
 2. **Codex** reads the plan, programs, and updates `CONTEXT_STATE.md`, pointing to Antigravity.
 3. **Antigravity** (triggered via `/triad_feature_cycle`) tests the code. If it breaks, it returns the task to Codex. If it passes, it updates the architecture and Changelog.
+
+**Strategic Alignment:**
+All agents also read `TRIAD_MASTER_ROADMAP.md` to ensure their work aligns with the project's strategic pillars. The `Roadmap Pillar(s)` field in `CONTEXT_STATE.md` tracks which pillar the current task relates to.
 
 For further theoretical details and operational limits, read the [ORCHESTRATION_GUIDE.md](./ORCHESTRATION_GUIDE.md).

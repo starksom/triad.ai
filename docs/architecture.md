@@ -13,7 +13,12 @@
 - **Triad CLI (`scripts/triad-cli`)**: A bash utility acting as a helper interface to bootstrap `.agent/` and read the state.
 
 ## Relevant Architectural Decisions
-- ADR-001: [Decision] justified by [Reason].
+- ADR-001: File-based state machine over database/API coordination, justified by portability, zero-dependency setup, and transparency for human review.
+- ADR-002: Markdown as the universal data format for all inter-agent communication, justified by version control compatibility, human readability, and LLM native comprehension.
+- ADR-003: Single-assignee model (one agent active at a time), justified by preventing race conditions and ensuring deterministic pipeline progression.
 
 ## Security and IAM Considerations
-- [Description of permission models, segregation of duties, zero trust policies, etc.]
+- Agents operate under strict role separation: Claude Code cannot write code, Codex cannot modify documentation artifacts, Antigravity gates all merges.
+- No hardcoded secrets permitted in any artifact (enforced via GLOBAL_SKILLS.md Section 3).
+- Shift-left security: OWASP Top 10 checks (SQL/NoSQL injection, XSS, CSRF, CORS) applied during both implementation (Codex) and validation (Antigravity) phases.
+- Final commit authority reserved exclusively for the human user (no automated pushes to main).

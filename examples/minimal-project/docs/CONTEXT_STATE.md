@@ -3,7 +3,7 @@
 ---
 
 ## Current Phase (Pipeline Status)
-> **[DEVELOPMENT]** 
+> **[DEVELOPMENT]**
 
 ---
 
@@ -11,6 +11,11 @@
 **Description:** Implement the missing `/health` endpoint to satisfy the requirements.
 - **Task:** Create `/health` endpoint in `src/index.js` returning `{ status: 'up' }`.
 - **Current Assignee:** Codex
+
+---
+
+## Roadmap Pillar(s)
+**Active Pillar(s):** N/A (Example project - no strategic pillar alignment)
 
 ---
 

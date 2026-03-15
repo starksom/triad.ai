@@ -6,7 +6,7 @@ No AI agent may initiate its work without reading this file and understanding ex
 ---
 
 ## Current Phase (Pipeline Status)
-> **[PLANNING]** 
+> **[PLANNING]**
 
 *(Valid options: `[PLANNING]`, `[DEVELOPMENT]`, `[VALIDATION]`, `[RELEASE_AUDIT]`)*
 
@@ -16,6 +16,12 @@ No AI agent may initiate its work without reading this file and understanding ex
 **Description:** What is being done at this exact moment and the active task.
 - **Task:** N/A (Awaiting planning)
 - **Current Assignee:** Claude Code
+
+---
+
+## Roadmap Pillar(s)
+**Active Pillar(s):** N/A
+*(Reference: `TRIAD_MASTER_ROADMAP.md` Phase 2/3 pillars. Example: `[P2-04] Graph Workflow Engine`)*
 
 ---
 
