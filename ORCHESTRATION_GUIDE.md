@@ -122,3 +122,57 @@ Story N: DEVELOPMENT → VALIDATION → CONSOLIDATION → RELEASE_AUDIT
 ```
 
 The `Story` field in CONTEXT_STATE.md tracks `N of M`. Antigravity increments the story number after each approval. Only the final story triggers the Release Audit.
+
+---
+
+## v3.0: State Graph Engine & CLI
+
+### Preferred Handoff: `triad transition`
+
+Instead of manually editing CONTEXT_STATE.md, agents can now use:
+
+```bash
+triad transition START_DEVELOPMENT    # PLANNING -> DEVELOPMENT
+triad transition SUBMIT_FOR_VALIDATION # DEVELOPMENT -> VALIDATION
+triad transition APPROVE              # VALIDATION -> CONSOLIDATION
+triad transition REJECT --category TEST_FAILURE --error "auth test failed"
+triad transition ESCALATE             # VALIDATION -> PLANNING (retry >= 3)
+triad transition NEXT_STORY           # CONSOLIDATION -> DEVELOPMENT
+triad transition ALL_STORIES_COMPLETE # CONSOLIDATION -> RELEASE_AUDIT
+triad transition RELEASE_TO_USER      # RELEASE_AUDIT -> USER_DECISION
+```
+
+Each transition:
+1. Validates guards (e.g., `hasStories`, `retryBelowMax`)
+2. Saves a checkpoint to `.triad/checkpoints/`
+3. Creates a trace span (Langfuse or local JSON)
+4. Auto-commits CONTEXT_STATE.md to git
+5. Appends to `docs/progress.txt`
+
+### Dashboard
+
+```bash
+triad dashboard              # Start at localhost:3000
+triad dashboard --port 8080  # Custom port
+```
+
+The dashboard shows 4 real-time panels: Pipeline State, State Graph (SVG), Timeline, and Decision Log. Updates via WebSocket when CONTEXT_STATE.md or checkpoints change.
+
+### Checkpoint Time-Travel
+
+```bash
+triad checkpoint list          # Show recent checkpoints
+triad checkpoint show <id>     # Full checkpoint details
+triad checkpoint restore <id>  # Restore CONTEXT_STATE.md to a previous state
+```
+
+### Observability
+
+Tracing is automatic. Configure Langfuse via environment variables or `.triad/config.json`:
+
+```bash
+export LANGFUSE_PUBLIC_KEY=pk-xxx
+export LANGFUSE_SECRET_KEY=sk-xxx
+```
+
+Without Langfuse keys, traces are saved locally to `.triad/traces/`.

@@ -92,3 +92,13 @@ STOP: You MUST NOT skip updating CONTEXT_STATE.md to [VALIDATION] + Antigravity 
 > 5. Implement security enhancements or performance upgrades
 > 6. Ensure API contracts are not broken; report breaking changes explicitly
 > 7. Update `docs/CONTEXT_STATE.md` → `[VALIDATION]` + Antigravity
+
+## Preferred Handoff Mechanism (v3.0)
+
+When implementation is complete, use the `triad transition` CLI command:
+
+```bash
+triad transition SUBMIT_FOR_VALIDATION
+```
+
+This automatically saves a checkpoint, creates a trace span, and auto-commits CONTEXT_STATE.md.

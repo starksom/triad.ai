@@ -113,3 +113,17 @@ STOP: You MUST NOT commit to git. Return merge decision to User.
 > **[HANDOFF TO USER]**
 > Do not commit. Output:
 > *"Release Audit complete. Recommended version: [Version]. USER DECISION: Commit or adjust?"*
+
+## Preferred Handoff Mechanism (v3.0)
+
+When completing a phase, use the `triad transition` CLI command instead of manually editing CONTEXT_STATE.md:
+
+```bash
+# After planning is complete:
+triad transition START_DEVELOPMENT
+
+# After release audit:
+triad transition RELEASE_TO_USER
+```
+
+This automatically saves a checkpoint, creates a trace span, and auto-commits CONTEXT_STATE.md.

@@ -105,3 +105,26 @@ STOP: On REJECT, you MUST set CONTEXT_STATE.md assignee to Codex, phase to [DEVE
 > **[HANDOFF]**
 > If last story: *"All stories complete. Context State updated. Conduct release audit with Claude Code."*
 > If more stories: *"Story N complete. Context State updated for story N+1. Open Codex."*
+
+## Preferred Handoff Mechanism (v3.0)
+
+Use `triad transition` CLI commands instead of manually editing CONTEXT_STATE.md:
+
+```bash
+# After validation passes:
+triad transition APPROVE
+
+# After validation fails (retry < 3):
+triad transition REJECT --category TEST_FAILURE --error "auth test failed"
+
+# After max retries exceeded:
+triad transition ESCALATE
+
+# After consolidation, next story:
+triad transition NEXT_STORY
+
+# After consolidation, all stories done:
+triad transition ALL_STORIES_COMPLETE
+```
+
+Each transition automatically saves a checkpoint, creates a trace span, and auto-commits CONTEXT_STATE.md.

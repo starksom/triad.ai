@@ -33,3 +33,9 @@ npm-debug.log*
 # Temporary files
 tmp/
 temp/
+
+# Triad runtime data
+.triad/checkpoints/
+.triad/traces/
+.triad/triad.db
+.triad/test-tmp/

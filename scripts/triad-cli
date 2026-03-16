@@ -7,8 +7,18 @@
 COMMAND=$1
 shift
 
-VERSION="2.0.0"
+VERSION="3.0.0"
 
+# Delegate to Node.js CLI if available
+if [ -f "node_modules/.bin/triad" ] || command -v triad &>/dev/null; then
+  if [ -f "node_modules/.bin/triad" ]; then
+    exec node_modules/.bin/triad "$COMMAND" "$@"
+  else
+    exec triad "$COMMAND" "$@"
+  fi
+fi
+
+# Fallback to Bash implementation
 case "$COMMAND" in
   init)
     echo "[INIT] Initializing Triad Pipeline..."

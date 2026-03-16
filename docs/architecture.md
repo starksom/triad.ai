@@ -28,3 +28,19 @@
 - No hardcoded secrets permitted in any artifact (enforced via `skills/shared/security-baseline.md`).
 - Shift-left security: OWASP Top 10 checks applied during implementation (`skills/codex/secure-coding.md`) and validation (`skills/antigravity/security-validation.md`).
 - Final commit authority reserved exclusively for the human user (no automated pushes to main).
+
+## v3.0 Architecture Additions
+
+### New Components
+- **State Graph Engine (`src/state-graph/`)**: Executable JSON graph definition replacing informal prose state machine. Guards validate transition preconditions; actions trigger checkpoints, traces, and git commits.
+- **Checkpoint System (`src/checkpoints/`)**: Persistent checkpointing with file-based (default) and SQLite (optional) backends. Supports time-travel restore.
+- **Tracing Module (`src/tracing/`)**: Langfuse integration for observability with local JSON fallback. Maps pipeline phases to traces and spans.
+- **Dashboard (`src/dashboard/`)**: Express + WebSocket web UI with real-time state visualization, timeline, and decision log.
+- **Node.js CLI (`src/cli.ts`)**: Commander-based CLI replacing Bash triad-cli (with backward-compatible delegation).
+- **Scaffolder (`src/create.ts`)**: `npx create-triad` for project initialization.
+
+### New Architectural Decisions
+- ADR-006: State Graph Engine — Replace informal markdown state machine with executable JSON graph definition. Enables programmatic transition validation, guard enforcement, visualization, and checkpoint triggers. Graph definition at `src/state-graph/graph.json`.
+- ADR-007: Dual Storage Strategy — Complement CONTEXT_STATE.md (human-readable, agent-compatible) with structured JSON checkpoints (machine-queryable, restorable). CONTEXT_STATE.md remains the inter-agent API contract per ADR-002; checkpoints add time-travel debugging and audit trails.
+- ADR-008: Observability with Langfuse — Langfuse selected over LangSmith for MIT licensing, self-hostability, and framework independence. Graceful fallback to local JSON traces when Langfuse keys are absent. Never crashes on tracing failure.
+- ADR-009: npm Distribution — Package as installable npm module (`create-triad`) with `npx create-triad` scaffolding. Bin entries: `triad` (CLI) and `create-triad` (scaffolder). Justified by discoverability, version management, and dependency resolution.

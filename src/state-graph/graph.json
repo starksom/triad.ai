@@ -1,0 +1,93 @@
+{
+  "$schema": "triad-state-graph/v1",
+  "initialState": "PLANNING",
+  "states": {
+    "PLANNING": {
+      "assignee": "Claude Code",
+      "description": "Define requirements, architecture, stories",
+      "onEnter": ["resetRetryCount", "clearRejectionLog"],
+      "transitions": {
+        "START_DEVELOPMENT": {
+          "target": "DEVELOPMENT",
+          "guards": ["hasStories"],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        }
+      }
+    },
+    "DEVELOPMENT": {
+      "assignee": "Codex",
+      "description": "Implement code and tests",
+      "transitions": {
+        "SUBMIT_FOR_VALIDATION": {
+          "target": "VALIDATION",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        }
+      }
+    },
+    "VALIDATION": {
+      "assignee": "Antigravity",
+      "description": "Run tests, linters, audits; binary APPROVE/REJECT",
+      "transitions": {
+        "APPROVE": {
+          "target": "CONSOLIDATION",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "REJECT": {
+          "target": "DEVELOPMENT",
+          "guards": ["retryBelowMax"],
+          "actions": ["incrementRetry", "logRejection", "saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "ESCALATE": {
+          "target": "PLANNING",
+          "guards": ["retryAtOrAboveMax"],
+          "actions": ["logEscalation", "saveCheckpoint", "traceTransition", "gitCommit"]
+        }
+      }
+    },
+    "CONSOLIDATION": {
+      "assignee": "Antigravity",
+      "description": "Update roadmap, architecture, changelog",
+      "transitions": {
+        "NEXT_STORY": {
+          "target": "DEVELOPMENT",
+          "guards": ["hasRemainingStories"],
+          "actions": ["incrementStory", "resetRetryCount", "saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "ALL_STORIES_COMPLETE": {
+          "target": "RELEASE_AUDIT",
+          "guards": ["allStoriesComplete"],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        }
+      }
+    },
+    "RELEASE_AUDIT": {
+      "assignee": "Claude Code",
+      "description": "Final quality audit, semver determination",
+      "transitions": {
+        "RELEASE_TO_USER": {
+          "target": "USER_DECISION",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition"]
+        }
+      }
+    },
+    "USER_DECISION": {
+      "assignee": "User",
+      "description": "Human commit/reject decision",
+      "transitions": {
+        "COMMIT": {
+          "target": "PLANNING",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition"]
+        },
+        "SEND_BACK": {
+          "target": "PLANNING",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition"]
+        }
+      }
+    }
+  }
+}

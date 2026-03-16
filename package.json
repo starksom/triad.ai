@@ -1,0 +1,62 @@
+{
+  "name": "create-triad",
+  "version": "3.0.0",
+  "description": "Multi-agent orchestration framework for AI-assisted software development",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "triad": "dist/cli.js",
+    "create-triad": "dist/create.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.js",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "inquirer": "^9.0.0",
+    "express": "^4.18.0",
+    "ws": "^8.16.0",
+    "chokidar": "^3.6.0",
+    "langfuse": "^3.0.0"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "@types/express": "^4.17.0",
+    "@types/ws": "^8.5.0",
+    "@types/better-sqlite3": "^7.6.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "@types/jest": "^29.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "orchestration",
+    "multi-agent",
+    "llm",
+    "pipeline",
+    "triad"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist/",
+    "skills/",
+    "prompts/",
+    "templates/",
+    ".agent/",
+    "docs/CONTEXT_STATE.md",
+    "ORCHESTRATION_GUIDE.md",
+    "TRIAD_MASTER_ROADMAP.md"
+  ]
+}
