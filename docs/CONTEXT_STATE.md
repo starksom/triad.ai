@@ -8,14 +8,16 @@ No AI agent may initiate its work without reading this file and understanding ex
 ## Current Phase (Pipeline Status)
 > **[PLANNING]**
 
-*(Valid options: `[PLANNING]`, `[DEVELOPMENT]`, `[VALIDATION]`, `[RELEASE_AUDIT]`)*
+*(Valid options: `[PLANNING]`, `[DEVELOPMENT]`, `[VALIDATION]`, `[CONSOLIDATION]`, `[RELEASE_AUDIT]`)*
 
 ---
 
 ## Current Task / Focus
-**Description:** What is being done at this exact moment and the active task.
 - **Task:** N/A (Awaiting planning)
+- **Story:** 0 of 0
 - **Current Assignee:** Claude Code
+- **Retry Count:** 0
+- **Max Retries:** 3
 
 ---
 
@@ -27,3 +29,23 @@ No AI agent may initiate its work without reading this file and understanding ex
 
 ## Handoff Message (From previous assignee)
 "Project newly initialized. Claude Code must begin the planning phase."
+
+---
+
+## Rejection Log (if applicable)
+*(Empty — no rejections recorded)*
+
+<!-- Rejection entry format:
+### Rejection #N - [YYYY-MM-DD]
+- **Rejector:** Antigravity
+- **Category:** [TEST_FAILURE | SECURITY_VIOLATION | UX_VIOLATION | PILLAR_CONFLICT | PR_SIZE_EXCEEDED]
+- **Files:** [affected files with line numbers]
+- **Error:** [exact error output]
+- **Required Fix:** [specific fix instruction]
+- **Checklist Failures:** [which items failed]
+-->
+
+---
+
+## Completion Signal
+> INCOMPLETE
