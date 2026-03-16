@@ -1,0 +1,220 @@
+/* Triad Dashboard — Light Theme */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --border: #dee2e6;
+  --text: #212529;
+  --text-muted: #6c757d;
+  --primary: #0d6efd;
+  --primary-light: #e7f1ff;
+  --success: #198754;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.connected { background: var(--success); }
+.status-dot.disconnected { background: var(--danger); }
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+  padding: 16px 24px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.panel h2 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* State Panel */
+#state-panel {
+  grid-column: 1 / -1;
+}
+
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.state-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.state-item label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.state-item span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.phase-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-family: var(--mono);
+  font-weight: 600;
+}
+
+/* Graph Panel */
+#graph-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#graph-svg {
+  width: 100%;
+  height: auto;
+  min-height: 300px;
+}
+
+.graph-node {
+  cursor: pointer;
+}
+
+.graph-node circle {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 2;
+  transition: fill 0.2s, stroke 0.2s;
+}
+
+.graph-node.active circle {
+  fill: var(--primary-light);
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+
+.graph-node text {
+  font-size: 11px;
+  font-family: var(--mono);
+  fill: var(--text);
+  text-anchor: middle;
+}
+
+.graph-edge {
+  stroke: var(--border);
+  stroke-width: 1.5;
+  fill: none;
+  marker-end: url(#arrowhead);
+}
+
+.graph-edge.active {
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+/* Scrollable panels */
+.scrollable {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.timeline-entry, .decision-entry {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.timeline-entry:last-child, .decision-entry:last-child {
+  border-bottom: none;
+}
+
+.timeline-timestamp, .decision-timestamp {
+  font-family: var(--mono);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.timeline-action {
+  font-weight: 500;
+}
+
+.empty-state {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 16px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr;
+    padding: 8px;
+  }
+
+  .state-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 2200px) {
+  main {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  #state-panel {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,24 +1,35 @@
 #!/usr/bin/env bash
 
 # triad-cli
-# Minimal CLI for initializing and interacting with the Triad Pipeline
-# Usage: triad init | triad run | triad validate
+# CLI for initializing and interacting with the Triad Pipeline
+# Usage: triad init | run | validate | skills | reject | consolidate | roadmap | status
 
 COMMAND=$1
+shift
 
-VERSION="1.0.0"
+VERSION="3.0.0"
 
+# Delegate to Node.js CLI if available
+if [ -f "node_modules/.bin/triad" ] || command -v triad &>/dev/null; then
+  if [ -f "node_modules/.bin/triad" ]; then
+    exec node_modules/.bin/triad "$COMMAND" "$@"
+  else
+    exec triad "$COMMAND" "$@"
+  fi
+fi
+
+# Fallback to Bash implementation
 case "$COMMAND" in
   init)
     echo "[INIT] Initializing Triad Pipeline..."
-    mkdir -p .agent/workflows docs prompts skills templates
-    touch docs/CONTEXT_STATE.md docs/roadmap.md docs/architecture.md CHANGELOG.md
+    mkdir -p .agent/workflows docs prompts skills/shared skills/claude_code skills/codex/language-specific skills/antigravity templates
+    touch docs/CONTEXT_STATE.md docs/roadmap.md docs/architecture.md docs/AGENTS.md docs/progress.txt CHANGELOG.md
     echo "[OK] Triad ecosystem scaffolded successfully."
     ;;
   run)
     echo "[STATE] Reading current CONTEXT_STATE.md..."
     if [ -f "docs/CONTEXT_STATE.md" ]; then
-      grep -E "Phase|Assignee|Task" docs/CONTEXT_STATE.md
+      grep -E "Phase|Assignee|Task|Story|Retry" docs/CONTEXT_STATE.md
     else
       echo "[ERROR] CONTEXT_STATE.md not found. Run 'triad init' first."
       exit 1
@@ -38,6 +49,88 @@ case "$COMMAND" in
     else
        echo "[FAIL] Validation FAILED. Return to Codex."
        exit 1
+    fi
+    ;;
+  skills)
+    AGENT=$1
+    echo "[SKILLS] Triad Pipeline Skill Library"
+    echo ""
+    if [ -z "$AGENT" ]; then
+      # List all skills by directory
+      for DIR in shared claude_code codex antigravity; do
+        if [ -d "skills/$DIR" ]; then
+          COUNT=$(find "skills/$DIR" -name "*.md" -type f | wc -l)
+          echo "--- $DIR ($COUNT skills) ---"
+          find "skills/$DIR" -name "*.md" -type f | sort | while read -r FILE; do
+            NAME=$(basename "$FILE" .md)
+            BUDGET=$(grep -oP '(?<=Token Budget:\*\* )\w+' "$FILE" 2>/dev/null || echo "unknown")
+            echo "  [$BUDGET] $NAME"
+          done
+          echo ""
+        fi
+      done
+    else
+      # List skills for a specific agent
+      DIR="skills/$AGENT"
+      if [ -d "$DIR" ]; then
+        COUNT=$(find "$DIR" -name "*.md" -type f | wc -l)
+        echo "--- $AGENT ($COUNT skills) ---"
+        find "$DIR" -name "*.md" -type f | sort | while read -r FILE; do
+          NAME=$(basename "$FILE" .md)
+          BUDGET=$(grep -oP '(?<=Token Budget:\*\* )\w+' "$FILE" 2>/dev/null || echo "unknown")
+          ID=$(grep -oP '(?<=ID:\*\* )SKL-[A-Z]+-[0-9]+' "$FILE" 2>/dev/null || echo "N/A")
+          echo "  [$BUDGET] $ID - $NAME"
+        done
+      else
+        echo "[ERROR] Unknown agent: $AGENT"
+        echo "Valid agents: shared, claude_code, codex, antigravity"
+        exit 1
+      fi
+    fi
+    ;;
+  reject)
+    CATEGORY=$1
+    MESSAGE=$2
+    if [ -z "$CATEGORY" ] || [ -z "$MESSAGE" ]; then
+      echo "Usage: triad reject <category> <message>"
+      echo "Categories: TEST_FAILURE, SECURITY_VIOLATION, UX_VIOLATION, PILLAR_CONFLICT, PR_SIZE_EXCEEDED"
+      exit 1
+    fi
+    VALID_CATS="TEST_FAILURE SECURITY_VIOLATION UX_VIOLATION PILLAR_CONFLICT PR_SIZE_EXCEEDED"
+    if ! echo "$VALID_CATS" | grep -qw "$CATEGORY"; then
+      echo "[ERROR] Invalid category: $CATEGORY"
+      echo "Valid: $VALID_CATS"
+      exit 1
+    fi
+    DATE=$(date +%Y-%m-%d)
+    TIME=$(date +"%Y-%m-%d %H:%M")
+    # Read current retry count
+    RETRY=$(grep -oP '(?<=Retry Count:\*\* )\d+' docs/CONTEXT_STATE.md 2>/dev/null || echo "0")
+    NEW_RETRY=$((RETRY + 1))
+    echo "[REJECT] Category: $CATEGORY"
+    echo "[REJECT] Message: $MESSAGE"
+    echo "[REJECT] Retry: $NEW_RETRY of 3"
+    if [ "$NEW_RETRY" -ge 3 ]; then
+      echo "[ESCALATE] Max retries reached. Escalating to Claude Code for re-architecture."
+    fi
+    # Append to progress.txt
+    echo "$TIME REJECTED - $CATEGORY: $MESSAGE - back to Codex (retry $NEW_RETRY)" >> docs/progress.txt
+    echo "[OK] Rejection logged to docs/progress.txt"
+    echo "[NOTE] Update docs/CONTEXT_STATE.md manually with full rejection details."
+    ;;
+  consolidate)
+    echo "[CONSOLIDATE] Reviewing AGENTS.md for recurring patterns..."
+    if [ -f "docs/AGENTS.md" ]; then
+      ENTRIES=$(grep -c "^##" docs/AGENTS.md 2>/dev/null || echo "0")
+      echo "  Total decision entries: $ENTRIES"
+      echo ""
+      echo "  Frequent keywords:"
+      grep -oP '(?<=Decided: ).*' docs/AGENTS.md 2>/dev/null | \
+        tr ' ' '\n' | sort | uniq -c | sort -rn | head -10 | sed 's/^/    /'
+      echo ""
+      echo "[NOTE] Review patterns above. Promote recurring decisions to skill files."
+    else
+      echo "[WARN] docs/AGENTS.md not found. No decisions to consolidate."
     fi
     ;;
   roadmap)
@@ -63,6 +156,8 @@ case "$COMMAND" in
     $0 run
     echo ""
     $0 roadmap
+    echo ""
+    $0 skills
     ;;
   --version|-v)
     echo "triad-cli v$VERSION"
@@ -70,21 +165,27 @@ case "$COMMAND" in
   --help|-h)
     echo "triad-cli v$VERSION - Triad Pipeline Orchestration Tool"
     echo ""
-    echo "Usage: triad <command>"
+    echo "Usage: triad <command> [args]"
     echo ""
     echo "Commands:"
-    echo "  init       Scaffold the Triad Pipeline directory structure"
-    echo "  run        Display current pipeline phase and assignee"
-    echo "  validate   Run Antigravity validation (linters + tests)"
-    echo "  roadmap    Display Master Roadmap pillar status"
-    echo "  status     Combined view of pipeline state and roadmap"
+    echo "  init                   Scaffold the Triad Pipeline directory structure"
+    echo "  run                    Display current pipeline phase, assignee, and story"
+    echo "  validate               Run Antigravity validation (linters + tests)"
+    echo "  skills [agent]         List loaded skills (optionally filter by agent)"
+    echo "  reject <cat> <msg>     Format structured rejection and log to progress.txt"
+    echo "  consolidate            Review AGENTS.md for patterns to promote to skills"
+    echo "  roadmap                Display Master Roadmap pillar status"
+    echo "  status                 Combined view: state + roadmap + skills"
+    echo ""
+    echo "Rejection categories:"
+    echo "  TEST_FAILURE, SECURITY_VIOLATION, UX_VIOLATION, PILLAR_CONFLICT, PR_SIZE_EXCEEDED"
     echo ""
     echo "Flags:"
-    echo "  --version  Display CLI version"
-    echo "  --help     Display this help message"
+    echo "  --version              Display CLI version"
+    echo "  --help                 Display this help message"
     ;;
   *)
-    echo "Usage: triad {init|run|validate|roadmap|status|--help|--version}"
+    echo "Usage: triad {init|run|validate|skills|reject|consolidate|roadmap|status|--help|--version}"
     exit 1
     ;;
 esac

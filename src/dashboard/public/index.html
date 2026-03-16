@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triad Pipeline Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Triad Pipeline</h1>
+    <span id="connection-status" class="status-dot disconnected" title="WebSocket disconnected"></span>
+  </header>
+
+  <main>
+    <section id="state-panel" class="panel">
+      <h2>Pipeline State</h2>
+      <div class="state-grid">
+        <div class="state-item">
+          <label>Phase</label>
+          <span id="state-phase" class="phase-badge">--</span>
+        </div>
+        <div class="state-item">
+          <label>Assignee</label>
+          <span id="state-assignee">--</span>
+        </div>
+        <div class="state-item">
+          <label>Task</label>
+          <span id="state-task">--</span>
+        </div>
+        <div class="state-item">
+          <label>Story</label>
+          <span id="state-story">--</span>
+        </div>
+        <div class="state-item">
+          <label>Retry</label>
+          <span id="state-retry">--</span>
+        </div>
+        <div class="state-item">
+          <label>Signal</label>
+          <span id="state-signal">--</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="graph-panel" class="panel">
+      <h2>State Graph</h2>
+      <div id="graph-container">
+        <svg id="graph-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </section>
+
+    <section id="timeline-panel" class="panel">
+      <h2>Timeline</h2>
+      <div id="timeline-list" class="scrollable"></div>
+    </section>
+
+    <section id="decisions-panel" class="panel">
+      <h2>Decision Log</h2>
+      <div id="decisions-list" class="scrollable"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
