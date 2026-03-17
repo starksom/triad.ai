@@ -13,7 +13,7 @@ No AI agent may initiate its work without reading this file and understanding ex
 ---
 
 ## Current Task / Focus
-- **Task:** N/A (Awaiting planning)
+- **Task:** Define the next Phase 2 implementation batch and replace placeholder backlog items with concrete competitive-parity stories.
 - **Story:** 0 of 0
 - **Current Assignee:** Claude Code
 - **Retry Count:** 0
@@ -22,13 +22,13 @@ No AI agent may initiate its work without reading this file and understanding ex
 ---
 
 ## Roadmap Pillar(s)
-**Active Pillar(s):** N/A
+**Active Pillar(s):** [P2-01] Agent Execution Engine, [P2-05] Official Tool Framework, [P2-06] Layered Structured Memory
 *(Reference: `TRIAD_MASTER_ROADMAP.md` Phase 2/3 pillars. Example: `[P2-04] Graph Workflow Engine`)*
 
 ---
 
 ## Handoff Message (From previous assignee)
-"Project newly initialized. Claude Code must begin the planning phase."
+"v3.0 foundation work is already present in the repository. Planning must now turn the remaining Phase 2 pillars into concrete stories in docs/roadmap.md before handing a scoped implementation slice to Codex."
 
 ---
 

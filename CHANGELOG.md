@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+### Added (v3.0 Architecture)
+- State Graph Engine (`src/state-graph/`) with executable JSON graph, guard validation, and checkpoint triggers (ADR-006)
+- Checkpoint System (`src/checkpoints/`) with file-based and SQLite backends for time-travel restore (ADR-007)
+- Tracing Module (`src/tracing/`) with Langfuse integration and local JSON fallback (ADR-008)
+- Dashboard (`src/dashboard/`) with Express + WebSocket real-time state visualization
+- Node.js Commander CLI (`src/cli.ts`) replacing Bash triad-cli with backward compatibility (ADR-009)
+- Scaffolder (`src/create.ts`) enabling `npx create-triad` project initialization
+- FR-05 through FR-09 registered in `docs/architecture.md`
+- Consolidated 7 implemented pillars from Phase 2 to Phase 1 in `TRIAD_MASTER_ROADMAP.md`
+
 ### Added
 - CLAUDE.md for auto-injection of Triad instructions into Claude Code sessions
 - TRIAD_MASTER_ROADMAP.md integration across all agent prompts, skills, and workflows
