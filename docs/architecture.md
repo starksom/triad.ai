@@ -8,6 +8,11 @@
 - FR-02 (CLI Integration): The `triad-cli` tool scaffolds and tracks the state of the project. Commands: `init`, `run`, `validate`, `skills`, `reject`, `consolidate`.
 - FR-03 (Multi-Skill Library): Priority-tiered skill system with P0/P1/P2 loading across 4 directories (shared, claude_code, codex, antigravity).
 - FR-04 (Rejection Protocol): Structured rejection with retry limits, escalation path, and append-only logging.
+- FR-05 (State Graph Engine): Executable JSON graph replacing linear pipelines (`src/state-graph`), enforcing transition guards via ADR-006.
+- FR-06 (Advanced CLI & SDK): Node.js Commander CLI (`triad`) with `npx create-triad` scaffolder via ADR-009.
+- FR-07 (Observability): Langfuse observability with local JSON fallback mapping pipeline phases to traces/spans via ADR-008.
+- FR-08 (Execution Replay & Checkpoints): File and SQLite-backed checkpoint system for time-travel restore and cross-session memory via ADR-007.
+- FR-09 (Monitoring Dashboard): Express and WebSocket real-time UI for visualizing state, timeline, and decision logs.
 
 ## Main Components
 - **Agent Prompts (`prompts/`)**: Strict system instructions constraining each AI to its role (PO, Squad Leader, Tech Lead). Each prompt includes STOP rules, skill loading declarations, and handoff protocols.

@@ -13,10 +13,19 @@ Establishing the bare minimum requirements for the project to be adopted, reprod
 - [x] **Core CLI Scaffolding:** Initialized `triad-cli` for initializing and reading states.
 - [x] **Mandatory Human Control:** Ensured commit decisions remain with the human user.
 
+### v3.0 Architecture Additions (Completed)
+- [x] **4. Graph Workflow Engine:** Executable JSON graph replacing linear pipelines (`src/state-graph`).
+- [x] **9. Extended CLI Interface:** Node.js Commander CLI (`triad` and `create-triad`).
+- [x] **10. Observability & Tracing:** Langfuse integration and local JSON fallback (`src/tracing`).
+- [x] **11. Execution Replay:** Deterministic replay via checkpoint restoration.
+- [x] **17. Developer Experience (SDKs):** `npx create-triad` scaffolder and npm distribution.
+- [x] **18. State Monitoring Dashboard:** Express+WebSocket UI (`src/dashboard`).
+- [x] **19. Persistent Cross-Session Memory:** File and SQLite checkpoint system (`src/checkpoints`).
+
 ---
 
 ## Phase 2: Competitive Parity (Active Development)
-To eliminate gaps compared to modern frameworks (CrewAI, LangGraph, Ruflo), `triad.ai` must implement the following 19 technical pillars:
+To eliminate gaps compared to modern frameworks (CrewAI, LangGraph, Ruflo), `triad.ai` must implement the following remaining technical pillars:
 
 ### 1. Agent Execution Engine
 Provide a formal programmatic abstraction for agents (`name`, `role`, `model`, `instructions`, `run()`). Fully support specialized types: **Generator**, **Critic**, **Verifier**, and **Arbiter**.
@@ -30,9 +39,6 @@ Implement configurable strategies to define single sources of truth from multi-m
 - **Weighted Score**: Trust-based scoring.
 - **Confidence Ranking**.
 - **Adversarial Debate**: LLMs explicitly debate until a conclusion is reached.
-
-### 4. Graph Workflow Engine
-Move beyond linear pipelines. Support **Nodes, Edges, Conditions, Loops**, and **Parallel execution** to define complex agentic workflows mathematically.
 
 ### 5. Official Tool Framework (Registry)
 Agents must access external tools reliably via a formal `Tool` object (`name`, `permissions`, `execute()`). Core integrations required: `web_search`, `code_executor`, `filesystem`, `database`, `rag`.
@@ -49,15 +55,6 @@ Prevent agents from causing destructive cross-contamination. Isolate work stream
 
 ### 8. Automated Retry & Self-Healing
 If Antigravity (validation) fails, the pipeline must automatically loop back to Codex (implementation) passing the strict failure logs without requiring manual prompt engineering until the test suite passes.
-
-### 9. Extended CLI Interface
-Evolve the `triad` command line to support advanced interactions: `triad init`, `triad run`, `triad debate`, `triad validate`, `triad benchmark`, and `triad replay`.
-
-### 10. Observability & Tracing
-Implement detailed telemetry. Track: `agent executed`, `model used`, `token usage`, `latency`, `tool call payloads`, and visual `execution trees`.
-
-### 11. Execution Replay
-Every workflow execution must generate a hash/ID. Add the ability to deterministically run `triad replay <run_id>` to simplify debugging and regression testing.
 
 ### 12. Automated Benchmark Engine
 Provide built-in commands to evaluate the local agents against standard academic datasets. Target support for: **HumanEval** (Code), **SWE-bench** (SE), **GAIA** (Reasoning), and **MMLU** (Knowledge).
@@ -76,15 +73,6 @@ Standardize the API so external applications can pause workflows elegantly (e.g.
 
 ### 16. CI/CD Native Compatibility
 Publish official adapters/actions for **GitHub Actions** and **GitLab CI** enabling PRs to trigger automated Triad validation before allowing merges.
-
-### 17. Developer Experience (SDKs)
-Release formal programmatic SDKs for **Python** and **TypeScript** (npm/pypi packages) accompanied by rich documentation and template repositories.
-
-### 18. State Monitoring Dashboard
-Visual interface (web or TUI) displaying the current pipeline phase, transition history, individual agent logs, and cycle metrics.
-
-### 19. Persistent Cross-Session Memory
-Version controlled `CONTEXT_STATE.md` linked to git commits, establishing a complete and accessible historical log of architectural decisions for new team members.
 
 ---
 
