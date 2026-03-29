@@ -4,35 +4,29 @@
 - **ID:** SKL-SHARED-010
 - **Agents:** shared
 - **Token Budget:** standard
-- **Source:** claude-octopus (adapted)
+- **Maturity:** planned
+- **Runtime Scope:** documentation-only (no `src/consensus` module yet)
 - **Pillars:** [P2-03]
 
 ## Purpose
-Define when and how to apply consensus strategies to multi-provider responses. Ensures a single source of truth is derived from comparative response arrays using configurable quality gates.
+Define target behavior for selecting a single decision from multi-provider outputs once consensus support is implemented.
 
 ## STOP Rules
-- MUST NOT require consensus for single-provider responses
-- MUST NOT override consensus threshold below 50% (minimum meaningful agreement)
-- MUST NOT use adversarial debate for trivial or time-sensitive tasks
+- MUST NOT claim consensus is enforced in current runtime
+- MUST NOT block validation waiting for a non-existent consensus command
 
-## Protocol
-1. Check if `consensusConfig` is set in current `PipelineContext`
-2. If not set, use default: `majority_vote` with 75% threshold
-3. Select strategy based on task criticality:
-   - **Majority Vote (75%)**: General agreement for standard tasks
-   - **Weighted Score**: When specific providers are more trusted for the domain
-   - **Confidence Ranking**: When providers self-report certainty scores
-   - **Adversarial Debate**: For critical decisions requiring rigorous challenge
-4. Execute consensus strategy via `ConsensusEngine`
-5. If consensus reached: return `ConsensusResult` with winner and confidence
-6. If consensus NOT reached: escalate to human or increase provider count
+## Protocol (Planned)
+1. Accept `MultiModelResponse` candidates.
+2. Apply strategy-specific scoring (majority, weighted, confidence, debate).
+3. Return winner, confidence, and dissenting evidence.
+4. Escalate to human decision if threshold is not reached.
+
+## Current Fallback
+Until implementation exists, use explicit reviewer judgment plus test outcomes.
 
 ## Checklist
-- [ ] Strategy appropriate for task criticality
-- [ ] Threshold meets minimum 50% floor
-- [ ] Dissenting responses logged for audit trail
-- [ ] Escalation path defined for no-consensus scenarios
-- [ ] Consensus result includes confidence score
+- [ ] Planned behavior is documented without overstating implementation
+- [ ] Runtime flow defines a fallback decision gate
 
 ## Handoff
-`ConsensusResult` passed to the requesting agent. Dissenting responses logged to observability traces.
+When implemented, output should feed validation/release decisions.

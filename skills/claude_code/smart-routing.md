@@ -4,38 +4,28 @@
 - **ID:** SKL-CC-009
 - **Agents:** claude_code
 - **Token Budget:** standard
-- **Source:** claude-octopus (adapted)
+- **Maturity:** planned
+- **Runtime Scope:** documentation-only (no `src/router` yet)
 - **Pillars:** [P2-02], [P2-13]
 
 ## Purpose
-Classify incoming tasks by intent and route them to optimal provider+strategy combinations. Maps to claude-octopus's Probe/Grasp/Tangle/Ink taxonomy while preserving Triad's 3-agent model.
+Describe the future policy for automatic task classification and provider strategy routing.
 
 ## STOP Rules
-- MUST NOT route tasks to unavailable providers
-- MUST NOT override user-specified provider preferences
-- MUST NOT route security-sensitive tasks to economy-tier providers
+- MUST NOT represent Smart Router as implemented runtime behavior
+- MUST NOT override explicit user-selected providers/strategies
 
-## Protocol
-1. Receive task description from user or pipeline
-2. Classify task into category using `TaskClassifier`:
-   - **Research** (Probe): Exploratory queries, technology evaluation, competitive analysis
-   - **Design** (Grasp): Architecture decisions, API design, schema definition
-   - **Implementation** (Tangle): Code generation, test writing, refactoring
-   - **Review** (Ink): Code review, security audit, performance analysis
-3. Select execution strategy based on classification:
-   - Research: Parallel execution across available providers
-   - Design: Sequential execution (chain insights)
-   - Implementation: Single best-fit provider
-   - Review: Adversarial execution with consensus gate
-4. Select provider subset based on availability, cost tier, and domain expertise
-5. Construct `MultiModelRequest` and delegate to `MultiModelExecutor`
+## Protocol (Planned)
+1. Classify task intent (`research`, `design`, `implementation`, `review`).
+2. Recommend provider subset + strategy.
+3. Respect availability, cost policy, and operator overrides.
+
+## Current Runtime Equivalent
+Use manual strategy flags with `triad multi-model --strategy ...` and optional `--providers`.
 
 ## Checklist
-- [ ] Task classified to correct category
-- [ ] Strategy matches classification
-- [ ] Selected providers are available and within budget
-- [ ] Security-sensitive tasks routed to premium tier
-- [ ] Classification logged for routing analytics
+- [ ] Documentation clearly labels this as planned
+- [ ] Operators are pointed to current manual routing commands
 
 ## Handoff
-Routed request passed to `MultiModelExecutor`. Classification logged to observability traces.
+When implemented, router output should build a `MultiModelRequest` automatically.

@@ -4,33 +4,27 @@
 - **ID:** SKL-SHARED-011
 - **Agents:** shared
 - **Token Budget:** standard
-- **Source:** claude-octopus (adapted)
+- **Maturity:** beta
+- **Runtime Scope:** provider tiers + `CostTracker` + `triad cost-report`
 - **Pillars:** [P2-13]
 
 ## Purpose
-Define cost-tiered model selection rules to optimize LLM spending across the pipeline. Route tasks to the most cost-effective provider tier that meets quality requirements.
+Guide provider/strategy usage to control spend while preserving delivery quality.
 
 ## STOP Rules
-- MUST NOT select economy tier for security-critical or architecture decisions
-- MUST NOT exceed per-cycle budget without user approval
-- MUST NOT hide cost information from the user
+- MUST NOT hide cost data from users
+- MUST NOT document deprecated 3-tier taxonomy as runtime fact
 
-## Protocol
-1. Classify task by required quality level:
-   - **Premium**: Architecture decisions, security audits, release reviews, consensus arbitration
-   - **Standard**: Feature implementation, test writing, routine validation, research
-   - **Economy**: Draft generation, bulk formatting, documentation scaffolding, code linting
-2. Select provider and model from the appropriate cost tier
-3. If preferred tier is unavailable, fall back to next available tier (prefer up, not down)
-4. Track cumulative cost via `CostTracker`
-5. Report cost summary via `triad cost-report`
+## Runtime Protocol (Current)
+1. Use provider-configured tiers: `free`, `low`, `medium`, `high`, `premium`.
+2. Execute via `triad multi-model`.
+3. Track aggregate usage automatically.
+4. Report totals by provider/model/tier using `triad cost-report`.
 
 ## Checklist
-- [ ] Task classified to correct quality tier
-- [ ] Provider selected from appropriate cost tier
-- [ ] Fallback to higher tier (not lower) when preferred unavailable
-- [ ] Per-request cost logged
-- [ ] Cumulative cycle cost within budget
+- [ ] Tier terminology matches code (`free|low|medium|high|premium`)
+- [ ] Costs are reviewed during validation/consolidation
+- [ ] Expensive tiers are intentionally used for high-criticality tasks
 
 ## Handoff
-Cost data appended to observability traces. Summary available via CLI.
+Cost report informs manual routing decisions until Smart Router is implemented.
