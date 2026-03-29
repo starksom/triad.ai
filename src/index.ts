@@ -50,3 +50,18 @@ export type {
   ProviderExecutionOutput,
   ProviderExecutor,
 } from './multi-model/types.js';
+
+
+export { resolveConsensus } from './consensus/index.js';
+export type { ConsensusResult } from './consensus/index.js';
+
+export { RouterEngine, DEFAULT_ROUTER_CONFIG } from './router/engine.js';
+export { classifyTask } from './router/classifier.js';
+export type {
+  TaskClassification,
+  RoutingRule,
+  RouterConfig,
+  RoutingHistoryEntry,
+  RoutingDecision,
+  RoutedExecutionResult,
+} from './router/types.js';
