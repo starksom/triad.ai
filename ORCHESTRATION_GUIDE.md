@@ -176,3 +176,106 @@ export LANGFUSE_SECRET_KEY=sk-xxx
 ```
 
 Without Langfuse keys, traces are saved locally to `.triad/traces/`.
+
+---
+
+## v3.1.0: Multi-Provider Execution (Octopus-Inspired)
+
+### Provider Detection & Registration
+
+Triad now supports multiple LLM providers via a registry-based adapter layer. On startup, auto-detection scans for available providers:
+
+```bash
+triad providers          # List detected providers and their status
+triad providers detect   # Run full auto-detection scan
+```
+
+**Supported Providers:** Anthropic (Claude), OpenAI (GPT/Codex), Google (Gemini), Mistral, Ollama (local), OpenRouter (gateway).
+
+**Zero-Config Bootstrap:** Claude is built-in. All other providers are optional and progressively enhance capabilities. No external providers required to start.
+
+**Cost Tiers:**
+| Tier | Models | Use Case |
+|------|--------|----------|
+| Premium | Opus, GPT-4o | Critical decisions, complex architecture |
+| Standard | Sonnet, GPT-4o-mini | Focused tasks, routine implementation |
+| Economy | Haiku, Ollama locals | Bulk operations, draft generation |
+
+### Multi-Model Execution Strategies
+
+Three execution strategies map to pipeline phases:
+
+| Strategy | Phase Mapping | Description |
+|----------|--------------|-------------|
+| **Parallel** | PLANNING (research) | All providers simultaneously for breadth |
+| **Sequential** | PLANNING (scoping) | Chain outputs for logical flow |
+| **Adversarial** | VALIDATION (review) | Providers challenge each other |
+
+```bash
+triad multi-model "Analyze the authentication architecture"  # Default: parallel
+triad multi-model --strategy adversarial "Review this PR"    # Adversarial mode
+```
+
+### Consensus Quality Gate
+
+When multiple providers respond, the Consensus Engine determines a single source of truth:
+
+| Strategy | Threshold | Best For |
+|----------|-----------|----------|
+| Majority Vote | 75% | General agreement |
+| Weighted Score | configurable | Trusted provider bias |
+| Confidence Ranking | N/A | Self-assessed certainty |
+| Adversarial Debate | convergence | Critical decisions |
+
+```bash
+triad consensus "Should we use JWT or session-based auth?"  # Default: majority_vote
+triad consensus --strategy adversarial_debate "Evaluate security approach"
+```
+
+### Smart Router
+
+The Smart Router classifies incoming tasks and routes them to optimal provider+strategy combinations:
+
+| Classification | Octopus Mapping | Default Strategy | Preferred Tier |
+|---------------|----------------|-----------------|----------------|
+| Research | Probe | Parallel | Standard |
+| Design | Grasp | Sequential | Premium |
+| Implementation | Tangle | Single-provider | Standard |
+| Review | Ink | Adversarial | Premium |
+
+### Integration with Pipeline Phases
+
+Multi-provider execution integrates with existing phases:
+- **PLANNING:** Claude Code uses parallel/sequential execution for research and scoping
+- **DEVELOPMENT:** Codex uses single-provider or sequential for implementation
+- **VALIDATION:** Antigravity uses adversarial execution with consensus gate for quality assurance
+- **CONSOLIDATION:** Standard single-provider execution
+- **RELEASE_AUDIT:** Optional consensus-based final review
+
+---
+
+## v3.1.0: Dark Factory Mode
+
+### Autonomous Pipeline Execution
+
+Dark Factory Mode enables end-to-end pipeline execution from a markdown specification:
+
+```bash
+triad dark-factory spec.md                          # Default: supervised
+triad dark-factory --autonomy semi_autonomous spec.md  # Intervene on failures only
+triad dark-factory --autonomy autonomous spec.md       # Full pipeline, no interruption
+```
+
+### Autonomy Levels
+
+| Level | Description | Human Intervention |
+|-------|-------------|-------------------|
+| **Supervised** | Approve each phase transition | Every phase boundary |
+| **Semi-autonomous** | Intervene on failures only | Rejection/escalation only |
+| **Autonomous** | Full pipeline without interruption | Final commit only |
+
+### Safety Guarantees
+- Human retains final commit authority at all autonomy levels
+- Cycle limits prevent runaway execution (configurable `maxCycles`)
+- Satisfaction scoring triggers automatic stop below threshold
+- All transitions logged to `docs/progress.txt` and checkpointed

@@ -6,29 +6,29 @@ No AI agent may initiate its work without reading this file and understanding ex
 ---
 
 ## Current Phase (Pipeline Status)
-> **[PLANNING]**
+> **[DEVELOPMENT]**
 
 *(Valid options: `[PLANNING]`, `[DEVELOPMENT]`, `[VALIDATION]`, `[CONSOLIDATION]`, `[RELEASE_AUDIT]`)*
 
 ---
 
 ## Current Task / Focus
-- **Task:** Define the next Phase 2 implementation batch and replace placeholder backlog items with concrete competitive-parity stories.
-- **Story:** 0 of 0
-- **Current Assignee:** Claude Code
+- **Task:** Implement Story 1 — Multi-Backend LLM Adapter Layer (provider interfaces, registry, auto-detection, 6 adapter implementations, CLI commands). See `docs/roadmap.md` Story 1 for full specification.
+- **Story:** 1 of 8
+- **Current Assignee:** Codex
 - **Retry Count:** 0
 - **Max Retries:** 3
 
 ---
 
 ## Roadmap Pillar(s)
-**Active Pillar(s):** [P2-01] Agent Execution Engine, [P2-05] Official Tool Framework, [P2-06] Layered Structured Memory
+**Active Pillar(s):** [P2-13] Multi-Backend LLM Adapters, [P2-02] Multi-Model Simultaneous Execution, [P2-03] Consensus Engine, [P2-01] Agent Execution Engine, [P2-08] Dark Factory Mode
 *(Reference: `TRIAD_MASTER_ROADMAP.md` Phase 2/3 pillars. Example: `[P2-04] Graph Workflow Engine`)*
 
 ---
 
 ## Handoff Message (From previous assignee)
-"v3.0 foundation work is already present in the repository. Planning must now turn the remaining Phase 2 pillars into concrete stories in docs/roadmap.md before handing a scoped implementation slice to Codex."
+"Planning complete. 8 stories defined in docs/roadmap.md based on claude-octopus competitive analysis. ADRs 010-013 documented in docs/architecture.md. 7 new skills created. ORCHESTRATION_GUIDE.md updated with Multi-Provider Execution and Dark Factory sections. Start with Story 1: Multi-Backend LLM Adapter Layer — create src/providers/ with types.ts, registry.ts, detector.ts, and adapters/ (anthropic.ts, openai.ts, google.ts, ollama.ts, openrouter.ts, mistral.ts). Add triad providers and triad providers detect CLI commands. See ADR-010 for architectural guidance."
 
 ---
 

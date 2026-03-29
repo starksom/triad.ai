@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+### Added (v3.1.0 Planning — Octopus-Inspired Multi-Provider Engine)
+- 8 concrete implementation stories for v3.1.0 in `docs/roadmap.md`, derived from claude-octopus competitive analysis
+- ADR-010: Multi-Backend LLM Adapter Pattern (registry + auto-detection + graceful degradation)
+- ADR-011: Consensus Engine with Configurable Strategies (75% default threshold)
+- ADR-012: Smart Router for Task-to-Provider Mapping (research/design/implementation/review classification)
+- ADR-013: Dark Factory Autonomous Execution Mode (3 autonomy levels)
+- 7 new skills: `provider-detection` (P0), `multi-provider-orchestration` (P1), `consensus-protocol` (P1), `cost-optimization` (P1), `smart-routing` (P1), `dark-factory-planning` (P2), `consensus-validation` (P1)
+- Multi-Provider Execution section in `ORCHESTRATION_GUIDE.md`
+- Dark Factory Mode section in `ORCHESTRATION_GUIDE.md`
+- Smart Router (P2-04) pillar added to `TRIAD_MASTER_ROADMAP.md`
+- Updated P2-01, P2-02, P2-03, P2-08, P2-13 pillars with Octopus-inspired enhancements
+- 6 new CLI commands planned: `triad providers`, `triad providers detect`, `triad multi-model`, `triad consensus`, `triad dark-factory`, `triad cost-report`
+
 ### Added (v3.0 Architecture)
 - State Graph Engine (`src/state-graph/`) with executable JSON graph, guard validation, and checkpoint triggers (ADR-006)
 - Checkpoint System (`src/checkpoints/`) with file-based and SQLite backends for time-travel restore (ADR-007)

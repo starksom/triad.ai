@@ -33,8 +33,25 @@ This file is the entry point for the Triad Pipeline skill system. All agents MUS
 - `shared/strategic-alignment.md` — Master Roadmap alignment (P0)
 - `shared/token-optimization.md` — Token budget rules (P0)
 - `shared/security-baseline.md` — OWASP/Snyk baseline (P0)
+- `shared/provider-detection.md` — Auto-detect LLM providers at startup (P0) [P2-13]
 - `shared/commit-conventions.md` — Git commit standards (P1)
 - `shared/error-tracking.md` — Error logging protocol (P1)
+- `shared/multi-provider-orchestration.md` — Multi-LLM task execution protocol (P1) [P2-02, P2-13]
+- `shared/consensus-protocol.md` — Consensus strategy selection and execution (P1) [P2-03]
+- `shared/cost-optimization.md` — Cost-tiered model selection rules (P1) [P2-13]
+
+## Claude Code Skills
+
+- `claude_code/requirement-declaration.md` — Scope user stories and acceptance criteria (P0)
+- `claude_code/architecture-design.md` — System architecture and ADRs (P0)
+- `claude_code/smart-routing.md` — Task classification and provider routing (P1) [P2-02, P2-13]
+- `claude_code/dark-factory-planning.md` — Autonomous pipeline specification (P2) [P2-08]
+
+## Antigravity Skills
+
+- `antigravity/validation-protocol.md` — Binary APPROVE/REJECT decisions (P0)
+- `antigravity/rejection-protocol.md` — Structured rejection formatting (P0)
+- `antigravity/consensus-validation.md` — Multi-provider consensus during validation (P1) [P2-03]
 
 ## Format Reference
 
