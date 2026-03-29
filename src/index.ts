@@ -34,3 +34,16 @@ export { parseAgentsLog, parseProgressLog, appendAgentEntry, appendProgressEntry
 
 export type { CostTier, ProviderConfig, ProviderResponse, LLMProvider } from './providers/types.js';
 export { register, get, detect, listAvailable } from './providers/registry.js';
+
+export { MultiModelEngine } from './multi-model/engine.js';
+export { CostTracker } from './multi-model/cost-tracker.js';
+export type {
+  ExecutionStrategy,
+  MultiModelRequest,
+  MultiModelResponse,
+  MultiModelProviderResult,
+  MultiModelProviderError,
+  ProviderExecutionInput,
+  ProviderExecutionOutput,
+  ProviderExecutor,
+} from './multi-model/types.js';
