@@ -1,7 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+All notable changes to this project are documented here.
 
 ## [Unreleased]
 
@@ -32,35 +31,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - Consolidated 7 implemented pillars from Phase 2 to Phase 1 in `TRIAD_MASTER_ROADMAP.md`
 
 ### Added
-- CLAUDE.md for auto-injection of Triad instructions into Claude Code sessions
-- TRIAD_MASTER_ROADMAP.md integration across all agent prompts, skills, and workflows
-- Strategic Alignment section (Section 5) in GLOBAL_SKILLS.md with actionable checklists
-- Roadmap Pillar(s) field in CONTEXT_STATE.md for strategic tracking
-- `triad roadmap` and `triad status` CLI commands
-- `triad --help` and `triad --version` CLI flags
-- .gitignore for standard development artifacts
-- templates/ directory with README.template.md for child projects
-- Concrete validation checklists in GLOBAL_SKILLS.md (Sections 1-5)
-- Phase validation check in `triad validate` (verifies CONTEXT_STATE.md is in VALIDATION)
+- Published final ADR documents:
+  - ADR-010 Multi-Backend LLM Adapter Pattern
+  - ADR-011 Consensus Engine with Configurable Strategies (proposed)
+  - ADR-012 Smart Router for Task-to-Provider Mapping (proposed)
+  - ADR-013 Dark Factory Autonomous Execution Mode (proposed)
+- Added capability maturity matrices to core docs for runtime clarity (`stable`, `beta`, `planned`).
 
 ### Changed
-- README.md rewritten from placeholder template to full project documentation
-- CLI output uses plain text markers instead of emojis (requirement compliance)
-- architecture.md populated with real ADRs (ADR-001 through ADR-003) and security considerations
-- ORCHESTRATION_GUIDE.md expanded with Strategic Alignment section
-- FIRST_SETUP.md updated to reference CLAUDE.md auto-injection
-- All agent prompts (claude_code.md, codex.md, antigravity.md) now include TRIAD_MASTER_ROADMAP.md in mandatory reading
-- Workflow file (triad_feature_cycle.md) includes roadmap pillar tracking in all steps
+- Synchronized `README.md` CLI command list with the actual Commander CLI implementation.
+- Updated `ORCHESTRATION_GUIDE.md` to reflect implemented vs planned commands.
+- Updated `docs/architecture.md` to reflect real runtime maturity and ADR links.
+- Updated `docs/roadmap.md` with real completion state for stories 1-8.
+- Adjusted new skills in `skills/shared/`, `skills/claude_code/`, `skills/antigravity/` to match current runtime maturity.
 
-### Fixed
-- Removed stray debug comment from workflow file
+## [3.0.0] - 2026-03-29
 
-## [0.1.0] - 2025-01-01
 ### Added
-- Initial project structure based on the Triad Pipeline template.
-- Strict role separation (Claude Code, Codex, Antigravity).
-- CONTEXT_STATE.md as transactional token for pipeline phases.
-- Minimal example project (examples/minimal-project).
-- Core CLI scaffolding (triad init, run, validate).
-- GLOBAL_SKILLS.md with BMAD, Web Quality, Security, and Git lifecycle rules.
-- FIRST_SETUP.md and ORCHESTRATION_GUIDE.md documentation.
+- State graph engine (`src/state-graph/`) with transition guards.
+- Checkpoint system (`src/checkpoints/`) with file + sqlite backend support.
+- Tracing module (`src/tracing/`) with Langfuse and local JSON fallback.
+- Node.js CLI (`src/cli.ts`) and npm scaffold flow (`create-triad`).
+- Dashboard (`src/dashboard/`) for pipeline visibility.
+- Provider registry/detection (`src/providers/`) and multi-model engine (`src/multi-model/`).
+- Cost tracking/reporting via `.triad-cost-report.json` and `triad cost-report`.

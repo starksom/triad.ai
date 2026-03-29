@@ -26,3 +26,7 @@ Format:
 - Decided: Reforçar gate de qualidade com suíte de regressão explícita do fallback v3.0 (flags OFF) e cobertura mandatória para módulos v3.1 já implementados via configuração Jest + script dedicado.
 - Pillar: [P2-16], [P2-02], [P2-13]
 - Files: src/__tests__/v3-regression-flow.test.ts, jest.config.js, package.json
+## [2026-03-29] Codex - [CONSOLIDATION]
+- Decided: Reconciled runtime documentation with implemented CLI/provider capabilities, published ADR-010..013 as standalone final documents, and normalized capability maturity across skills/docs to stable/beta/planned.
+- Pillar: [P2-02], [P2-03], [P2-08], [P2-13]
+- Files: skills/shared/provider-detection.md, skills/shared/multi-provider-orchestration.md, skills/shared/consensus-protocol.md, skills/shared/cost-optimization.md, skills/claude_code/smart-routing.md, skills/claude_code/dark-factory-planning.md, skills/antigravity/consensus-validation.md, docs/adr/ADR-010-multi-backend-llm-adapter.md, docs/adr/ADR-011-consensus-engine.md, docs/adr/ADR-012-smart-router.md, docs/adr/ADR-013-dark-factory-mode.md, ORCHESTRATION_GUIDE.md, README.md, docs/architecture.md, docs/roadmap.md, CHANGELOG.md

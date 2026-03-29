@@ -22,9 +22,17 @@ import { parseProgressLog, parseAgentsLog, appendProgressEntry } from './utils/m
 import type { ActionPayload } from './state-graph/transitions.js';
 import type { TransitionResult } from './state-graph/types.js';
 import { detect as detectProviders, listAvailable } from './providers/registry.js';
+import {
+  majorityVote,
+  weightedScore,
+  confidenceRanking,
+  adversarialDebate,
+} from './consensus/engine.js';
+import type { ConsensusResponse } from './consensus/types.js';
 import { MultiModelEngine } from './multi-model/engine.js';
 import { CostTracker, type CostReport } from './multi-model/cost-tracker.js';
 import type { ExecutionStrategy } from './multi-model/types.js';
+import { DarkFactoryRunner } from './dark-factory/runner.js';
 
 const ROOT = resolve('.');
 const CONTEXT_STATE_PATH = join(ROOT, 'docs', 'CONTEXT_STATE.md');
@@ -216,6 +224,30 @@ program
           { stdio: 'inherit', cwd: ROOT }
         );
       }
+    }
+  });
+
+// ─── triad dark-factory ──────────────────────────────────────────────────────
+program
+  .command('dark-factory <spec>')
+  .description('Execute dark-factory pipeline from a markdown specification')
+  .action(async (spec: string) => {
+    const runner = new DarkFactoryRunner({
+      graphPath: GRAPH_PATH,
+      contextStatePath: CONTEXT_STATE_PATH,
+    });
+
+    try {
+      const result = await runner.runFromSpec(spec);
+      console.log(`Dark Factory run completed with ${result.cycles.length} cycle(s).`);
+      console.log(`Final phase: ${result.finalPhase}`);
+      console.log(`Reason: ${result.reason}`);
+      if (result.humanFinalCommitAuthorityRequired) {
+        console.log('Human final commit authority is required before any closure.');
+      }
+    } catch (error) {
+      console.error(`Dark Factory execution failed: ${(error as Error).message}`);
+      process.exit(1);
     }
   });
 
@@ -478,6 +510,53 @@ providers
     }
   });
 
+// ─── triad consensus ──────────────────────────────────────────────────────────
+program
+  .command('consensus <prompt>')
+  .description('Run consensus engine on candidate responses separated by "||"')
+  .option('--strategy <strategy>', 'Consensus strategy override')
+  .option('--threshold <threshold>', 'Consensus threshold override')
+  .action((prompt: string, options: { strategy?: string; threshold?: string }) => {
+    const ctx = parseContextState(CONTEXT_STATE_PATH);
+    const defaults = ctx.consensusConfig;
+    const strategy = (options.strategy ?? defaults?.strategy ?? 'majority_vote') as NonNullable<typeof defaults>['strategy'];
+    const threshold = options.threshold ? parseFloat(options.threshold) : (defaults?.threshold ?? 0.75);
+
+    const parts = prompt.split('||').map(part => part.trim()).filter(Boolean);
+    if (parts.length < 2) {
+      console.error('Provide at least two candidate responses separated by "||".');
+      process.exit(1);
+    }
+
+    const responses: ConsensusResponse[] = parts.map((content, idx) => ({
+      id: `candidate_${idx + 1}`,
+      content,
+      provider: `provider_${idx + 1}`,
+      confidence: 0.7,
+    }));
+
+    const config = {
+      threshold,
+      maxRounds: defaults?.maxRounds,
+      minAgreementDelta: defaults?.minAgreementDelta,
+    };
+
+    const result = strategy === 'weighted_score'
+      ? weightedScore(responses, config)
+      : strategy === 'confidence_ranking'
+        ? confidenceRanking(responses, config)
+        : strategy === 'adversarial_debate'
+          ? adversarialDebate(responses, config)
+          : majorityVote(responses, config);
+
+    console.log(`Strategy: ${result.strategy}`);
+    console.log(`Winner: ${result.winner?.id ?? 'none'}`);
+    console.log(`Confidence: ${result.confidence.toFixed(3)}`);
+    console.log(`Converged: ${result.converged ? 'yes' : 'no'} in ${result.rounds} round(s)`);
+    console.log(`Reasoning: ${result.reasoning}`);
+    console.log('Vote tally:');
+    for (const [candidate, score] of Object.entries(result.voteTally)) {
+      console.log(`  - ${candidate}: ${score.toFixed(3)}`);
 // ─── triad multi-model ───────────────────────────────────────────────────────
 program
   .command('multi-model <prompt>')
@@ -486,7 +565,8 @@ program
   .option('--providers <ids>', 'Comma-separated provider ids to use')
   .option('--timeout <ms>', 'Timeout in milliseconds', '30000')
   .option('--fallback-partial', 'In sequential mode, continue after first success')
-  .action(async (prompt: string, options: { strategy: ExecutionStrategy; providers?: string; timeout: string; fallbackPartial?: boolean }) => {
+  .option('--auto-route', 'Use smart router to auto-select strategy and providers')
+  .action(async (prompt: string, options: { strategy: ExecutionStrategy; providers?: string; timeout: string; fallbackPartial?: boolean; autoRoute?: boolean }) => {
     const strategy = options.strategy;
     if (!['parallel', 'sequential', 'adversarial'].includes(strategy)) {
       console.error(`Invalid strategy: ${strategy}`);
@@ -497,7 +577,7 @@ program
       ? options.providers.split(',').map((id) => id.trim()).filter(Boolean)
       : undefined;
 
-    const engine = new MultiModelEngine(async ({ providerId, prompt: providerPrompt }) => {
+    const providerExecutor: ProviderExecutor = async ({ providerId, prompt: providerPrompt }) => {
       const provider = listAvailable().find((candidate) => candidate.config.id === providerId);
       if (!provider) {
         throw new Error(`Provider ${providerId} is not available`);
@@ -511,9 +591,28 @@ program
         outputTokens: Math.ceil(response.length / 4),
         costUsd: provider.config.costTier === 'free' ? 0 : Number((response.length * 0.00001).toFixed(6)),
       };
-    });
+    };
 
     try {
+      if (options.autoRoute) {
+        const router = new RouterEngine(providerExecutor);
+        const routed = await router.executeRouted(prompt, {
+          timeoutMs: parseInt(options.timeout, 10),
+          fallbackPartial: options.fallbackPartial,
+        });
+
+        const tracker = loadCostTracker();
+        tracker.addResponse(routed.response);
+        saveCostTracker(tracker);
+
+        console.log(`Routed classification: ${routed.decision.classification}`);
+        console.log(`Routed strategy: ${routed.decision.strategy}`);
+        console.log(`Providers: ${routed.decision.providerIds.join(', ')}`);
+        console.log(`Consensus winner: ${routed.consensus.winnerProviderId} (confidence=${routed.consensus.confidence})`);
+        return;
+      }
+
+      const engine = new MultiModelEngine(providerExecutor);
       const result =
         strategy === 'parallel'
           ? await engine.executeParallel({
