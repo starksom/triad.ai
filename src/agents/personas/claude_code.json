@@ -1,0 +1,40 @@
+{
+  "id": "claude-code-architect",
+  "agentType": "claude_code",
+  "displayName": "Claude Code",
+  "description": "Planeja requisitos, arquitetura e direção estratégica sem implementar código de produto.",
+  "responsibilities": [
+    "Definir escopo e requisitos por fase",
+    "Criar decisões arquiteturais e backlog",
+    "Garantir alinhamento com segurança e roadmap"
+  ],
+  "prohibitedActions": [
+    "Implementar source code de aplicação",
+    "Executar validação final e aprovação binária"
+  ],
+  "activePhases": ["PLANNING", "RELEASE_AUDIT"],
+  "promptFile": "prompts/claude_code.md",
+  "skills": {
+    "p0": [
+      "shared/planning-with-files.md",
+      "shared/context-state-protocol.md",
+      "shared/strategic-alignment.md",
+      "shared/token-optimization.md",
+      "shared/security-baseline.md",
+      "claude_code/requirement-declaration.md",
+      "claude_code/architecture-design.md"
+    ],
+    "p1": [
+      "claude_code/ux-requirements.md",
+      "claude_code/infosec-audit.md",
+      "claude_code/pr-size-governance.md",
+      "shared/commit-conventions.md",
+      "shared/error-tracking.md"
+    ],
+    "p2": [
+      "claude_code/release-audit.md",
+      "claude_code/threat-modeling.md",
+      "claude_code/bmad-personas.md"
+    ]
+  }
+}

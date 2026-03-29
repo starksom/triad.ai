@@ -51,17 +51,5 @@ export type {
   ProviderExecutor,
 } from './multi-model/types.js';
 
-
-export { resolveConsensus } from './consensus/index.js';
-export type { ConsensusResult } from './consensus/index.js';
-
-export { RouterEngine, DEFAULT_ROUTER_CONFIG } from './router/engine.js';
-export { classifyTask } from './router/classifier.js';
-export type {
-  TaskClassification,
-  RoutingRule,
-  RouterConfig,
-  RoutingHistoryEntry,
-  RoutingDecision,
-  RoutedExecutionResult,
-} from './router/types.js';
+export { AgentEngine } from './agents/engine.js';
+export type { AgentType, PipelinePhase, Persona, Agent, AgentLifecycleInput, AgentRunContext } from './agents/types.js';
