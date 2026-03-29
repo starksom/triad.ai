@@ -119,6 +119,18 @@ describe('parseContextState', () => {
     const ctx = parseContextState(TEST_FILE);
     expect(ctx.roadmapPillars).toBe('N/A');
   });
+
+  it('parses consensus config when present', () => {
+    const withConsensus = `${SAMPLE_CONTEXT_STATE}\n## Consensus Config (Optional)\n- **Strategy:** weighted_score\n- **Threshold:** 0.82\n- **Max Rounds:** 4\n- **Min Agreement Delta:** 0.03\n`;
+    writeFileSync(TEST_FILE, withConsensus, 'utf-8');
+    const ctx = parseContextState(TEST_FILE);
+    expect(ctx.consensusConfig).toEqual({
+      strategy: 'weighted_score',
+      threshold: 0.82,
+      maxRounds: 4,
+      minAgreementDelta: 0.03,
+    });
+  });
 });
 
 describe('writeContextState', () => {
@@ -159,6 +171,32 @@ describe('writeContextState', () => {
     expect(parsed.story).toEqual({ current: 1, total: 3 });
     expect(parsed.assignee).toBe('Codex');
     expect(parsed.roadmapPillars).toBe('[P2-04] Graph Workflow Engine');
+    expect(parsed.consensusConfig).toBeUndefined();
+  });
+
+  it('writes and parses consensus config section', () => {
+    const ctx: PipelineContext = {
+      phase: 'DEVELOPMENT',
+      task: 'Consensus test',
+      story: { current: 2, total: 3 },
+      assignee: 'Codex',
+      retryCount: 0,
+      maxRetries: 3,
+      rejectionLog: [],
+      handoffMessage: 'Use consensus engine defaults.',
+      completionSignal: 'INCOMPLETE',
+      roadmapPillars: '[P2-03] Consensus Engine',
+      consensusConfig: {
+        strategy: 'adversarial_debate',
+        threshold: 0.8,
+        maxRounds: 5,
+        minAgreementDelta: 0.01,
+      },
+    };
+
+    writeContextState(TEST_FILE, ctx);
+    const parsed = parseContextState(TEST_FILE);
+    expect(parsed.consensusConfig).toEqual(ctx.consensusConfig);
   });
 });
 
