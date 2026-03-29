@@ -25,6 +25,7 @@ import { detect as detectProviders, listAvailable } from './providers/registry.j
 import { MultiModelEngine } from './multi-model/engine.js';
 import { CostTracker, type CostReport } from './multi-model/cost-tracker.js';
 import type { ExecutionStrategy } from './multi-model/types.js';
+import { DarkFactoryRunner } from './dark-factory/runner.js';
 
 const ROOT = resolve('.');
 const CONTEXT_STATE_PATH = join(ROOT, 'docs', 'CONTEXT_STATE.md');
@@ -216,6 +217,30 @@ program
           { stdio: 'inherit', cwd: ROOT }
         );
       }
+    }
+  });
+
+// ─── triad dark-factory ──────────────────────────────────────────────────────
+program
+  .command('dark-factory <spec>')
+  .description('Execute dark-factory pipeline from a markdown specification')
+  .action(async (spec: string) => {
+    const runner = new DarkFactoryRunner({
+      graphPath: GRAPH_PATH,
+      contextStatePath: CONTEXT_STATE_PATH,
+    });
+
+    try {
+      const result = await runner.runFromSpec(spec);
+      console.log(`Dark Factory run completed with ${result.cycles.length} cycle(s).`);
+      console.log(`Final phase: ${result.finalPhase}`);
+      console.log(`Reason: ${result.reason}`);
+      if (result.humanFinalCommitAuthorityRequired) {
+        console.log('Human final commit authority is required before any closure.');
+      }
+    } catch (error) {
+      console.error(`Dark Factory execution failed: ${(error as Error).message}`);
+      process.exit(1);
     }
   });
 

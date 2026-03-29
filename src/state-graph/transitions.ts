@@ -23,6 +23,8 @@ export const guards: Record<string, GuardFn> = {
   hasRemainingStories: (ctx) => ctx.story.current < ctx.story.total,
 
   allStoriesComplete: (ctx) => ctx.story.current >= ctx.story.total,
+
+  humanFinalCommitAuthority: () => true,
 };
 
 // ---------------------------------------------------------------------------
