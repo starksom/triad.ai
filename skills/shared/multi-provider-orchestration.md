@@ -4,35 +4,30 @@
 - **ID:** SKL-SHARED-009
 - **Agents:** shared
 - **Token Budget:** standard
-- **Source:** claude-octopus (adapted)
+- **Maturity:** beta
+- **Runtime Scope:** `src/multi-model/*` + `triad multi-model` + `triad cost-report`
 - **Pillars:** [P2-02], [P2-13]
 
 ## Purpose
-Define the protocol for executing tasks across multiple LLM providers simultaneously, sequentially, or adversarially. Enables comparative response arrays and cross-provider validation.
+Execute a prompt across multiple detected providers using explicit strategy selection.
 
 ## STOP Rules
-- MUST NOT send sensitive project data to providers without user consent
-- MUST NOT bypass cost tier limits
-- MUST NOT use providers not registered in `ProviderRegistry`
-- MUST NOT block pipeline on provider timeouts (use configurable timeout with fallback)
+- MUST NOT use providers outside `ProviderRegistry`
+- MUST NOT ignore timeout/failure handling
+- MUST NOT assume consensus engine availability
 
-## Protocol
-1. Read `ProviderRegistry.listAvailable()` to determine active providers
-2. Select execution strategy based on task phase:
-   - **Parallel**: PLANNING research tasks (all providers at once for breadth)
-   - **Sequential**: PLANNING scoping tasks (chain outputs for logical flow)
-   - **Adversarial**: VALIDATION review tasks (providers challenge each other)
-3. Construct `MultiModelRequest` with prompt, selected providers, strategy, and timeout
-4. Execute via `MultiModelExecutor` and collect `ProviderResponse[]`
-5. Pass responses to Consensus Engine if consensus is configured for the current phase
-6. Track costs via `CostTracker` and log to observability traces
+## Runtime Protocol (Current)
+1. Confirm provider state with `triad providers` / `triad providers detect`.
+2. Run `triad multi-model <prompt>` with `--strategy parallel|sequential|adversarial`.
+3. Optionally restrict providers via `--providers` and timeout via `--timeout`.
+4. Persist usage for aggregated reporting in `.triad-cost-report.json`.
+5. Inspect spend and token totals with `triad cost-report`.
 
 ## Checklist
-- [ ] Strategy matches pipeline phase
-- [ ] Provider timeouts configured (default 30s)
-- [ ] Cost tracked per provider per request
-- [ ] Failed providers handled gracefully (response excluded, not pipeline failure)
-- [ ] All responses include provider name and model for traceability
+- [ ] Strategy is explicitly selected or defaulted to `parallel`
+- [ ] Provider list only includes available ids
+- [ ] Partial failures are tolerated and surfaced
+- [ ] Cost accounting is persisted
 
 ## Handoff
-Response array passed to Consensus Engine or directly to the requesting agent.
+Result winners/errors are returned to caller; no built-in consensus stage is applied yet.
