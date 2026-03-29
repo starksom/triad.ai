@@ -17,6 +17,15 @@ Format:
 - Pillar: [P2-01], [P2-02], [P2-03], [P2-08], [P2-13]
 - Files: docs/roadmap.md, docs/architecture.md, TRIAD_MASTER_ROADMAP.md, ORCHESTRATION_GUIDE.md, CHANGELOG.md, skills/GLOBAL_SKILLS.md, skills/shared/provider-detection.md, skills/shared/multi-provider-orchestration.md, skills/shared/consensus-protocol.md, skills/shared/cost-optimization.md, skills/claude_code/smart-routing.md, skills/claude_code/dark-factory-planning.md, skills/antigravity/consensus-validation.md, docs/CONTEXT_STATE.md
 
+## [2026-03-29] Codex - [DEVELOPMENT]
+- Decided: Formalizar gates de release v3.1.0 com DoD por módulo, checklist de telemetria e segurança/governança, adicionar exigência operacional para bump semver apenas após aprovação integral dos gates e documentação sincronizada.
+- Pillar: [P2-14], [P2-16], [P2-02], [P2-03], [P2-13], [P2-08], [P2-01]
+- Files: docs/release_gates_v3_1.md, docs/v3_1_migration_plan.md, CHANGELOG.md
+
+## [2026-03-29] Codex - [DEVELOPMENT]
+- Decided: Reforçar gate de qualidade com suíte de regressão explícita do fallback v3.0 (flags OFF) e cobertura mandatória para módulos v3.1 já implementados via configuração Jest + script dedicado.
+- Pillar: [P2-16], [P2-02], [P2-13]
+- Files: src/__tests__/v3-regression-flow.test.ts, jest.config.js, package.json
 ## [2026-03-29] Codex - [CONSOLIDATION]
 - Decided: Reconciled runtime documentation with implemented CLI/provider capabilities, published ADR-010..013 as standalone final documents, and normalized capability maturity across skills/docs to stable/beta/planned.
 - Pillar: [P2-02], [P2-03], [P2-08], [P2-13]
