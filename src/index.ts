@@ -51,5 +51,13 @@ export type {
   ProviderExecutor,
 } from './multi-model/types.js';
 
+export { DarkFactoryRunner } from './dark-factory/runner.js';
+export type {
+  AutonomyLevel,
+  DarkFactoryConfig,
+  DarkFactoryCycleStatus,
+  CycleResult,
+  DarkFactoryRunResult,
+} from './dark-factory/types.js';
 export { AgentEngine } from './agents/engine.js';
 export type { AgentType, PipelinePhase, Persona, Agent, AgentLifecycleInput, AgentRunContext } from './agents/types.js';

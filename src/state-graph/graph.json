@@ -11,6 +11,11 @@
           "target": "DEVELOPMENT",
           "guards": ["hasStories"],
           "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "DARK_FACTORY_START": {
+          "target": "DEVELOPMENT",
+          "guards": ["hasStories"],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
         }
       }
     },
@@ -19,6 +24,11 @@
       "description": "Implement code and tests",
       "transitions": {
         "SUBMIT_FOR_VALIDATION": {
+          "target": "VALIDATION",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "DARK_FACTORY_SUBMIT": {
           "target": "VALIDATION",
           "guards": [],
           "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
@@ -34,12 +44,27 @@
           "guards": [],
           "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
         },
+        "DARK_FACTORY_APPROVE": {
+          "target": "CONSOLIDATION",
+          "guards": [],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        },
         "REJECT": {
           "target": "DEVELOPMENT",
           "guards": ["retryBelowMax"],
           "actions": ["incrementRetry", "logRejection", "saveCheckpoint", "traceTransition", "gitCommit"]
         },
+        "DARK_FACTORY_REJECT": {
+          "target": "DEVELOPMENT",
+          "guards": ["retryBelowMax"],
+          "actions": ["incrementRetry", "logRejection", "saveCheckpoint", "traceTransition", "gitCommit"]
+        },
         "ESCALATE": {
+          "target": "PLANNING",
+          "guards": ["retryAtOrAboveMax"],
+          "actions": ["logEscalation", "saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "DARK_FACTORY_ESCALATE": {
           "target": "PLANNING",
           "guards": ["retryAtOrAboveMax"],
           "actions": ["logEscalation", "saveCheckpoint", "traceTransition", "gitCommit"]
@@ -59,6 +84,11 @@
           "target": "RELEASE_AUDIT",
           "guards": ["allStoriesComplete"],
           "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
+        },
+        "DARK_FACTORY_COMPLETE": {
+          "target": "RELEASE_AUDIT",
+          "guards": ["allStoriesComplete"],
+          "actions": ["saveCheckpoint", "traceTransition", "gitCommit"]
         }
       }
     },
@@ -70,12 +100,17 @@
           "target": "USER_DECISION",
           "guards": [],
           "actions": ["saveCheckpoint", "traceTransition"]
+        },
+        "DARK_FACTORY_REQUIRE_HUMAN_FINAL_AUTHORITY": {
+          "target": "USER_DECISION",
+          "guards": ["humanFinalCommitAuthority"],
+          "actions": ["saveCheckpoint", "traceTransition"]
         }
       }
     },
     "USER_DECISION": {
       "assignee": "User",
-      "description": "Human commit/reject decision",
+      "description": "Human final commit authority (explicit COMMIT/SEND_BACK required)",
       "transitions": {
         "COMMIT": {
           "target": "PLANNING",
