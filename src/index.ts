@@ -22,3 +22,6 @@ export { loadConfig, saveConfig, getConfigValue, setConfigValue, redactSecrets }
 export type { TriadConfig } from './utils/config.js';
 export { autoCommit, getCurrentSha, isClean } from './utils/git.js';
 export { parseAgentsLog, parseProgressLog, appendAgentEntry, appendProgressEntry } from './utils/markdown.js';
+
+export type { CostTier, ProviderConfig, ProviderResponse, LLMProvider } from './providers/types.js';
+export { register, get, detect, listAvailable } from './providers/registry.js';

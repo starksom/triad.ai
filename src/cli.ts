@@ -21,6 +21,7 @@ import { autoCommit, getCurrentSha } from './utils/git.js';
 import { parseProgressLog, parseAgentsLog, appendProgressEntry } from './utils/markdown.js';
 import type { ActionPayload } from './state-graph/transitions.js';
 import type { TransitionResult } from './state-graph/types.js';
+import { detect as detectProviders, listAvailable } from './providers/registry.js';
 
 const ROOT = resolve('.');
 const CONTEXT_STATE_PATH = join(ROOT, 'docs', 'CONTEXT_STATE.md');
@@ -418,6 +419,46 @@ program
 
     const { startDashboard } = await import('./dashboard/server.js');
     startDashboard(ROOT, port);
+  });
+
+// ─── triad providers ──────────────────────────────────────────────────────────
+const providers = program
+  .command('providers')
+  .description('List provider availability');
+
+providers
+  .action(() => {
+    const available = listAvailable();
+    if (available.length === 0) {
+      console.log('No providers are currently available.');
+      return;
+    }
+
+    console.log('Available providers:');
+    for (const provider of available) {
+      console.log(`  - ${provider.config.displayName} (${provider.config.id})`);
+    }
+  });
+
+providers
+  .command('detect [id]')
+  .description('Detect provider availability (all providers or one by id)')
+  .action((id?: string) => {
+    try {
+      const result = detectProviders(id);
+      const detections = Array.isArray(result) ? result : [result];
+
+      for (const detection of detections) {
+        const status = detection.available ? 'available' : 'unavailable';
+        const reason = detection.reason ? ` | ${detection.reason}` : '';
+        console.log(
+          `${detection.displayName} (${detection.id}): ${status} | cost=${detection.costTier}${reason}`
+        );
+      }
+    } catch (error) {
+      console.error((error as Error).message);
+      process.exit(1);
+    }
   });
 
 // ─── triad init ───────────────────────────────────────────────────────────────
