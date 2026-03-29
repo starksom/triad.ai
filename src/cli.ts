@@ -22,6 +22,13 @@ import { parseProgressLog, parseAgentsLog, appendProgressEntry } from './utils/m
 import type { ActionPayload } from './state-graph/transitions.js';
 import type { TransitionResult } from './state-graph/types.js';
 import { detect as detectProviders, listAvailable } from './providers/registry.js';
+import {
+  majorityVote,
+  weightedScore,
+  confidenceRanking,
+  adversarialDebate,
+} from './consensus/engine.js';
+import type { ConsensusResponse } from './consensus/types.js';
 
 const ROOT = resolve('.');
 const CONTEXT_STATE_PATH = join(ROOT, 'docs', 'CONTEXT_STATE.md');
@@ -458,6 +465,56 @@ providers
     } catch (error) {
       console.error((error as Error).message);
       process.exit(1);
+    }
+  });
+
+// ─── triad consensus ──────────────────────────────────────────────────────────
+program
+  .command('consensus <prompt>')
+  .description('Run consensus engine on candidate responses separated by "||"')
+  .option('--strategy <strategy>', 'Consensus strategy override')
+  .option('--threshold <threshold>', 'Consensus threshold override')
+  .action((prompt: string, options: { strategy?: string; threshold?: string }) => {
+    const ctx = parseContextState(CONTEXT_STATE_PATH);
+    const defaults = ctx.consensusConfig;
+    const strategy = (options.strategy ?? defaults?.strategy ?? 'majority_vote') as NonNullable<typeof defaults>['strategy'];
+    const threshold = options.threshold ? parseFloat(options.threshold) : (defaults?.threshold ?? 0.75);
+
+    const parts = prompt.split('||').map(part => part.trim()).filter(Boolean);
+    if (parts.length < 2) {
+      console.error('Provide at least two candidate responses separated by "||".');
+      process.exit(1);
+    }
+
+    const responses: ConsensusResponse[] = parts.map((content, idx) => ({
+      id: `candidate_${idx + 1}`,
+      content,
+      provider: `provider_${idx + 1}`,
+      confidence: 0.7,
+    }));
+
+    const config = {
+      threshold,
+      maxRounds: defaults?.maxRounds,
+      minAgreementDelta: defaults?.minAgreementDelta,
+    };
+
+    const result = strategy === 'weighted_score'
+      ? weightedScore(responses, config)
+      : strategy === 'confidence_ranking'
+        ? confidenceRanking(responses, config)
+        : strategy === 'adversarial_debate'
+          ? adversarialDebate(responses, config)
+          : majorityVote(responses, config);
+
+    console.log(`Strategy: ${result.strategy}`);
+    console.log(`Winner: ${result.winner?.id ?? 'none'}`);
+    console.log(`Confidence: ${result.confidence.toFixed(3)}`);
+    console.log(`Converged: ${result.converged ? 'yes' : 'no'} in ${result.rounds} round(s)`);
+    console.log(`Reasoning: ${result.reasoning}`);
+    console.log('Vote tally:');
+    for (const [candidate, score] of Object.entries(result.voteTally)) {
+      console.log(`  - ${candidate}: ${score.toFixed(3)}`);
     }
   });
 

@@ -34,3 +34,7 @@ export { parseAgentsLog, parseProgressLog, appendAgentEntry, appendProgressEntry
 
 export type { CostTier, ProviderConfig, ProviderResponse, LLMProvider } from './providers/types.js';
 export { register, get, detect, listAvailable } from './providers/registry.js';
+
+export { majorityVote, weightedScore, confidenceRanking, adversarialDebate } from './consensus/engine.js';
+export { semanticSimilarity, pairwiseSimilarityMatrix, rankByCohesion } from './consensus/evaluator.js';
+export type { ConsensusStrategy, ConsensusConfig, ConsensusResult, ConsensusResponse } from './consensus/types.js';
