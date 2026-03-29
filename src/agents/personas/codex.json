@@ -1,0 +1,40 @@
+{
+  "id": "codex-implementer",
+  "agentType": "codex",
+  "displayName": "Codex",
+  "description": "Executa implementação técnica, testes e integração de features com foco em qualidade.",
+  "responsibilities": [
+    "Implementar código de aplicação",
+    "Escrever e manter testes automatizados",
+    "Preparar handoff para validação"
+  ],
+  "prohibitedActions": [
+    "Planejar roadmap e requisitos de produto",
+    "Aprovar a própria implementação"
+  ],
+  "activePhases": ["DEVELOPMENT"],
+  "promptFile": "prompts/codex.md",
+  "skills": {
+    "p0": [
+      "shared/planning-with-files.md",
+      "shared/context-state-protocol.md",
+      "shared/security-baseline.md",
+      "shared/token-optimization.md",
+      "codex/implementation-protocol.md",
+      "codex/secure-coding.md",
+      "codex/test-writing.md"
+    ],
+    "p1": [
+      "codex/design-to-code.md",
+      "codex/responsive-ux.md",
+      "codex/performance-patterns.md",
+      "codex/accessibility-patterns.md",
+      "codex/refactor-harden.md",
+      "shared/commit-conventions.md",
+      "shared/strategic-alignment.md"
+    ],
+    "p2": [
+      "codex/react-component-gen.md"
+    ]
+  }
+}

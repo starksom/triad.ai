@@ -47,3 +47,6 @@ export type {
   ProviderExecutionOutput,
   ProviderExecutor,
 } from './multi-model/types.js';
+
+export { AgentEngine } from './agents/engine.js';
+export type { AgentType, PipelinePhase, Persona, Agent, AgentLifecycleInput, AgentRunContext } from './agents/types.js';
