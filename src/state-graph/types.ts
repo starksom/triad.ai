@@ -41,6 +41,13 @@ export type RejectionCategory =
 
 export type CompletionSignal = 'INCOMPLETE' | 'COMPLETE';
 
+export interface PipelineConsensusConfig {
+  strategy: 'majority_vote' | 'weighted_score' | 'confidence_ranking' | 'adversarial_debate';
+  threshold: number;
+  maxRounds?: number;
+  minAgreementDelta?: number;
+}
+
 export interface PipelineContext {
   phase: string;
   task: string;
@@ -52,6 +59,7 @@ export interface PipelineContext {
   handoffMessage: string;
   completionSignal: CompletionSignal;
   roadmapPillars: string;
+  consensusConfig?: PipelineConsensusConfig;
 }
 
 export interface TransitionResult {

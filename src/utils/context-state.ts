@@ -6,7 +6,12 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import type { PipelineContext, RejectionEntry, CompletionSignal } from '../state-graph/types.js';
+import type {
+  PipelineContext,
+  RejectionEntry,
+  CompletionSignal,
+  PipelineConsensusConfig,
+} from '../state-graph/types.js';
 
 /**
  * Parse CONTEXT_STATE.md into a structured PipelineContext.
@@ -28,6 +33,7 @@ export function parseContextState(filePath: string): PipelineContext {
     ?? '';
   const completionSignal = (extractPattern(content, />\s*(INCOMPLETE|COMPLETE)/) ?? 'INCOMPLETE') as CompletionSignal;
   const roadmapPillars = extractPattern(content, /\*\*Active Pillar\(s\):\*\*\s*(.+)/) ?? 'N/A';
+  const consensusConfig = parseConsensusConfig(content);
 
   const rejectionLog = parseRejections(content);
 
@@ -42,6 +48,7 @@ export function parseContextState(filePath: string): PipelineContext {
     handoffMessage: handoffMessage.trim().replace(/^["']|["']$/g, ''),
     completionSignal,
     roadmapPillars: roadmapPillars.trim(),
+    consensusConfig,
   };
 }
 
@@ -52,6 +59,12 @@ export function writeContextState(filePath: string, ctx: PipelineContext): void 
   const rejectionSection = ctx.rejectionLog.length > 0
     ? ctx.rejectionLog.map(formatRejection).join('\n\n')
     : '*(Empty — no rejections recorded)*';
+  const consensusConfigSection = ctx.consensusConfig
+    ? `- **Strategy:** ${ctx.consensusConfig.strategy}
+- **Threshold:** ${ctx.consensusConfig.threshold}
+- **Max Rounds:** ${ctx.consensusConfig.maxRounds ?? 3}
+- **Min Agreement Delta:** ${ctx.consensusConfig.minAgreementDelta ?? 0.05}`
+    : '*(Not configured — default strategy applies when consensus engine is used)*';
 
   const content = `# Context Synchronization Point (Context State)
 
@@ -79,6 +92,11 @@ No AI agent may initiate its work without reading this file and understanding ex
 ## Roadmap Pillar(s)
 **Active Pillar(s):** ${ctx.roadmapPillars}
 *(Reference: \`TRIAD_MASTER_ROADMAP.md\` Phase 2/3 pillars. Example: \`[P2-04] Graph Workflow Engine\`)*
+
+---
+
+## Consensus Config (Optional)
+${consensusConfigSection}
 
 ---
 
@@ -153,4 +171,18 @@ function formatRejection(r: RejectionEntry): string {
 - **Error:** ${r.error}
 - **Required Fix:** ${r.requiredFix}
 - **Checklist Failures:** ${r.checklistFailures}`;
+}
+
+function parseConsensusConfig(content: string): PipelineConsensusConfig | undefined {
+  const strategy = extractPattern(content, /\*\*Strategy:\*\*\s*(majority_vote|weighted_score|confidence_ranking|adversarial_debate)/);
+  if (!strategy) {
+    return undefined;
+  }
+
+  return {
+    strategy: strategy as PipelineConsensusConfig['strategy'],
+    threshold: parseFloat(extractPattern(content, /\*\*Threshold:\*\*\s*(\d*\.?\d+)/) ?? '0.75'),
+    maxRounds: parseInt(extractPattern(content, /\*\*Max Rounds:\*\*\s*(\d+)/) ?? '3', 10),
+    minAgreementDelta: parseFloat(extractPattern(content, /\*\*Min Agreement Delta:\*\*\s*(\d*\.?\d+)/) ?? '0.05'),
+  };
 }

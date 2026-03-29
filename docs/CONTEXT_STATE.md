@@ -27,6 +27,14 @@ No AI agent may initiate its work without reading this file and understanding ex
 
 ---
 
+## Consensus Config (Optional)
+- **Strategy:** majority_vote
+- **Threshold:** 0.75
+- **Max Rounds:** 3
+- **Min Agreement Delta:** 0.05
+
+---
+
 ## Handoff Message (From previous assignee)
 "Planning complete. 8 stories defined in docs/roadmap.md based on claude-octopus competitive analysis. ADRs 010-013 documented in docs/architecture.md. 7 new skills created. ORCHESTRATION_GUIDE.md updated with Multi-Provider Execution and Dark Factory sections. Start with Story 1: Multi-Backend LLM Adapter Layer — create src/providers/ with types.ts, registry.ts, detector.ts, and adapters/ (anthropic.ts, openai.ts, google.ts, ollama.ts, openrouter.ts, mistral.ts). Add triad providers and triad providers detect CLI commands. See ADR-010 for architectural guidance."
 
