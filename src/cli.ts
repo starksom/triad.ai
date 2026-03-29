@@ -7,7 +7,7 @@
  */
 
 import { Command } from 'commander';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
 
@@ -29,14 +29,31 @@ import {
   adversarialDebate,
 } from './consensus/engine.js';
 import type { ConsensusResponse } from './consensus/types.js';
+import { MultiModelEngine } from './multi-model/engine.js';
+import { CostTracker, type CostReport } from './multi-model/cost-tracker.js';
+import type { ExecutionStrategy } from './multi-model/types.js';
 
 const ROOT = resolve('.');
 const CONTEXT_STATE_PATH = join(ROOT, 'docs', 'CONTEXT_STATE.md');
 const GRAPH_PATH = join(ROOT, 'src', 'state-graph', 'graph.json');
 const PROGRESS_PATH = join(ROOT, 'docs', 'progress.txt');
 const AGENTS_PATH = join(ROOT, 'docs', 'AGENTS.md');
+const COST_REPORT_PATH = join(ROOT, '.triad-cost-report.json');
 
 const program = new Command();
+
+function loadCostTracker(): CostTracker {
+  if (!existsSync(COST_REPORT_PATH)) {
+    return new CostTracker();
+  }
+
+  const raw = JSON.parse(readFileSync(COST_REPORT_PATH, 'utf-8')) as CostReport;
+  return CostTracker.fromReport(raw);
+}
+
+function saveCostTracker(tracker: CostTracker): void {
+  writeFileSync(COST_REPORT_PATH, JSON.stringify(tracker.getReport(), null, 2), 'utf-8');
+}
 
 program
   .name('triad')
@@ -515,6 +532,108 @@ program
     console.log('Vote tally:');
     for (const [candidate, score] of Object.entries(result.voteTally)) {
       console.log(`  - ${candidate}: ${score.toFixed(3)}`);
+// ─── triad multi-model ───────────────────────────────────────────────────────
+program
+  .command('multi-model <prompt>')
+  .description('Execute a prompt across multiple providers')
+  .option('--strategy <strategy>', 'parallel | sequential | adversarial', 'parallel')
+  .option('--providers <ids>', 'Comma-separated provider ids to use')
+  .option('--timeout <ms>', 'Timeout in milliseconds', '30000')
+  .option('--fallback-partial', 'In sequential mode, continue after first success')
+  .action(async (prompt: string, options: { strategy: ExecutionStrategy; providers?: string; timeout: string; fallbackPartial?: boolean }) => {
+    const strategy = options.strategy;
+    if (!['parallel', 'sequential', 'adversarial'].includes(strategy)) {
+      console.error(`Invalid strategy: ${strategy}`);
+      process.exit(1);
+    }
+
+    const providerIds = options.providers
+      ? options.providers.split(',').map((id) => id.trim()).filter(Boolean)
+      : undefined;
+
+    const engine = new MultiModelEngine(async ({ providerId, prompt: providerPrompt }) => {
+      const provider = listAvailable().find((candidate) => candidate.config.id === providerId);
+      if (!provider) {
+        throw new Error(`Provider ${providerId} is not available`);
+      }
+
+      const response = `(${provider.config.displayName}) ${providerPrompt}`;
+      return {
+        model: `${providerId}-default`,
+        content: response,
+        inputTokens: Math.ceil(providerPrompt.length / 4),
+        outputTokens: Math.ceil(response.length / 4),
+        costUsd: provider.config.costTier === 'free' ? 0 : Number((response.length * 0.00001).toFixed(6)),
+      };
+    });
+
+    try {
+      const result =
+        strategy === 'parallel'
+          ? await engine.executeParallel({
+              prompt,
+              strategy,
+              providerIds,
+              timeoutMs: parseInt(options.timeout, 10),
+              fallbackPartial: options.fallbackPartial,
+            })
+          : strategy === 'sequential'
+            ? await engine.executeSequential({
+                prompt,
+                strategy,
+                providerIds,
+                timeoutMs: parseInt(options.timeout, 10),
+                fallbackPartial: options.fallbackPartial,
+              })
+            : await engine.executeAdversarial({
+                prompt,
+                strategy,
+                providerIds,
+                timeoutMs: parseInt(options.timeout, 10),
+                fallbackPartial: options.fallbackPartial,
+              });
+
+      const tracker = loadCostTracker();
+      tracker.addResponse(result);
+      saveCostTracker(tracker);
+
+      console.log(`Strategy: ${result.strategy}`);
+      console.log(`Duration: ${result.durationMs}ms`);
+      if (result.errors.length > 0) {
+        console.log(`Errors: ${result.errors.length}`);
+      }
+      for (const winner of result.winners) {
+        console.log(`Winner: ${winner.providerName} (${winner.providerId})`);
+        console.log(`  ${winner.content}`);
+      }
+    } catch (error) {
+      console.error((error as Error).message);
+      process.exit(1);
+    }
+  });
+
+// ─── triad cost-report ───────────────────────────────────────────────────────
+program
+  .command('cost-report')
+  .description('Display aggregated provider/model/tier costs')
+  .action(() => {
+    const tracker = loadCostTracker();
+    const report = tracker.getReport();
+
+    if (report.byProviderModelTier.length === 0) {
+      console.log('No cost data recorded yet. Run "triad multi-model <prompt>" first.');
+      return;
+    }
+
+    console.log(`Generated: ${report.generatedAt}`);
+    console.log(`Total requests: ${report.totals.requests}`);
+    console.log(`Total cost (USD): ${report.totals.totalCostUsd.toFixed(6)}`);
+    console.log('');
+
+    for (const row of report.byProviderModelTier) {
+      console.log(
+        `${row.providerId} | ${row.model} | ${row.tier} | requests=${row.requests} | tokens=${row.totalTokens} | cost=$${row.totalCostUsd.toFixed(6)}`
+      );
     }
   });
 
