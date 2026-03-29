@@ -5,6 +5,16 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 
+export type V31FeatureModule = 'multiProvider' | 'multiModel' | 'consensus' | 'router' | 'darkFactory';
+
+export interface FeatureFlags {
+  multiProvider: boolean;
+  multiModel: boolean;
+  consensus: boolean;
+  router: boolean;
+  darkFactory: boolean;
+}
+
 export interface TriadConfig {
   version: number;
   stateGraph: string;
@@ -35,6 +45,7 @@ export interface TriadConfig {
     port: number;
     host: string;
   };
+  featureFlags: FeatureFlags;
 }
 
 const DEFAULT_CONFIG: TriadConfig = {
@@ -66,6 +77,13 @@ const DEFAULT_CONFIG: TriadConfig = {
     port: 3000,
     host: 'localhost',
   },
+  featureFlags: {
+    multiProvider: false,
+    multiModel: false,
+    consensus: false,
+    router: false,
+    darkFactory: false,
+  },
 };
 
 /**
@@ -78,8 +96,8 @@ export function loadConfig(projectRoot: string): TriadConfig {
     return { ...DEFAULT_CONFIG };
   }
 
-  const raw = JSON.parse(readFileSync(configPath, 'utf-8'));
-  return { ...DEFAULT_CONFIG, ...raw };
+  const raw = JSON.parse(readFileSync(configPath, 'utf-8')) as Partial<TriadConfig>;
+  return mergeConfig(raw);
 }
 
 /**
@@ -148,6 +166,59 @@ export function redactSecrets(config: TriadConfig): TriadConfig {
 
 function getConfigPath(projectRoot: string): string {
   return join(projectRoot, '.triad', 'config.json');
+}
+
+export function getFeatureFlags(config: TriadConfig): FeatureFlags {
+  return { ...DEFAULT_CONFIG.featureFlags, ...config.featureFlags };
+}
+
+/**
+ * Returns whether a v3.1 module is enabled; otherwise explicitly falls back to v3.0 behavior.
+ */
+export function isV31ModuleEnabled(config: TriadConfig, module: V31FeatureModule): boolean {
+  return getFeatureFlags(config)[module];
+}
+
+/**
+ * Explicitly resolve which behavior must be used by each module.
+ */
+export function resolveModuleBehavior(config: TriadConfig, module: V31FeatureModule): 'v3.1' | 'v3.0' {
+  return isV31ModuleEnabled(config, module) ? 'v3.1' : 'v3.0';
+}
+
+function mergeConfig(raw: Partial<TriadConfig>): TriadConfig {
+  return {
+    ...DEFAULT_CONFIG,
+    ...raw,
+    checkpoints: {
+      ...DEFAULT_CONFIG.checkpoints,
+      ...raw.checkpoints,
+    },
+    tracing: {
+      ...DEFAULT_CONFIG.tracing,
+      ...raw.tracing,
+      langfuse: {
+        ...DEFAULT_CONFIG.tracing.langfuse,
+        ...raw.tracing?.langfuse,
+      },
+    },
+    retry: {
+      ...DEFAULT_CONFIG.retry,
+      ...raw.retry,
+    },
+    git: {
+      ...DEFAULT_CONFIG.git,
+      ...raw.git,
+    },
+    dashboard: {
+      ...DEFAULT_CONFIG.dashboard,
+      ...raw.dashboard,
+    },
+    featureFlags: {
+      ...DEFAULT_CONFIG.featureFlags,
+      ...raw.featureFlags,
+    },
+  };
 }
 
 export { DEFAULT_CONFIG };

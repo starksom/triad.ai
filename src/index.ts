@@ -18,7 +18,16 @@ export { LangfuseTraceBackend } from './tracing/langfuse.js';
 export type { Trace, Span, TraceBackend, SpanMetadata } from './tracing/types.js';
 
 export { parseContextState, writeContextState, appendRejection } from './utils/context-state.js';
-export { loadConfig, saveConfig, getConfigValue, setConfigValue, redactSecrets } from './utils/config.js';
-export type { TriadConfig } from './utils/config.js';
+export {
+  loadConfig,
+  saveConfig,
+  getConfigValue,
+  setConfigValue,
+  redactSecrets,
+  getFeatureFlags,
+  isV31ModuleEnabled,
+  resolveModuleBehavior,
+} from './utils/config.js';
+export type { TriadConfig, FeatureFlags, V31FeatureModule } from './utils/config.js';
 export { autoCommit, getCurrentSha, isClean } from './utils/git.js';
 export { parseAgentsLog, parseProgressLog, appendAgentEntry, appendProgressEntry } from './utils/markdown.js';
