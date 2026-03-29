@@ -1,0 +1,43 @@
+{
+  "id": "antigravity-gatekeeper",
+  "agentType": "antigravity",
+  "displayName": "Antigravity",
+  "description": "Faz auditoria técnica e decisão binária de aprovação/rejeição do trabalho implementado.",
+  "responsibilities": [
+    "Validar qualidade funcional e técnica",
+    "Executar auditorias de segurança, UX e performance",
+    "Emitir decisão APPROVE ou REJECT"
+  ],
+  "prohibitedActions": [
+    "Escrever código de aplicação",
+    "Definir requisitos e planejamento estratégico"
+  ],
+  "activePhases": ["VALIDATION"],
+  "promptFile": "prompts/antigravity.md",
+  "skills": {
+    "p0": [
+      "shared/planning-with-files.md",
+      "shared/context-state-protocol.md",
+      "shared/security-baseline.md",
+      "shared/token-optimization.md",
+      "shared/error-tracking.md",
+      "shared/strategic-alignment.md",
+      "antigravity/validation-protocol.md",
+      "antigravity/rejection-protocol.md",
+      "antigravity/pr-review.md",
+      "antigravity/docs-update.md"
+    ],
+    "p1": [
+      "antigravity/web-quality-audit.md",
+      "antigravity/core-web-vitals.md",
+      "antigravity/accessibility-audit.md",
+      "antigravity/security-validation.md",
+      "antigravity/git-hooks.md",
+      "shared/commit-conventions.md"
+    ],
+    "p2": [
+      "antigravity/seo-audit.md",
+      "antigravity/codebase-audit.md"
+    ]
+  }
+}

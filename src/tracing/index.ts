@@ -4,7 +4,7 @@
  */
 
 import { randomBytes } from 'node:crypto';
-import type { Trace, Span, TraceBackend, SpanMetadata } from './types.js';
+import type { Trace, Span, TraceBackend, SpanMetadata, RouteDecisionMetadata } from './types.js';
 import { LocalTraceBackend } from './local.js';
 import { LangfuseTraceBackend } from './langfuse.js';
 import type { TriadConfig } from '../utils/config.js';
@@ -110,5 +110,20 @@ export class TraceManager {
    */
   listTraces(): Trace[] {
     return this.backend.listTraces();
+  }
+
+
+  /**
+   * Record smart router decision telemetry as a dedicated span.
+   */
+  recordRouteDecision(traceId: string, agent: string, routeDecision: RouteDecisionMetadata): Span {
+    const span = this.startSpan(traceId, 'routing.decision', agent, {
+      decision: routeDecision.strategy,
+      routeDecision,
+    });
+    this.endSpan(traceId, span.spanId, {
+      routeDecision,
+    });
+    return span;
   }
 }
