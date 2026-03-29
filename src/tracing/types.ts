@@ -7,11 +7,21 @@ export interface TokenUsage {
   output?: number;
 }
 
+
+export interface RouteDecisionMetadata {
+  classification: string;
+  strategy: string;
+  providerIds: string[];
+  reason: string;
+  fallbackUsed?: boolean;
+}
+
 export interface SpanMetadata {
   tokenUsage?: TokenUsage;
   latencyMs?: number;
   decision?: string;
   checkpointId?: string;
+  routeDecision?: RouteDecisionMetadata;
   [key: string]: unknown;
 }
 
