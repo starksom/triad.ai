@@ -63,6 +63,11 @@ Este documento define a migração controlada de `v0.1 -> v3.0 -> v3.1` com ativ
   - perda de rastreabilidade/auditoria.
 - **Ação de rollback:** desligar `featureFlags.darkFactory` e retornar ao modo supervisionado `v3.0`.
 
+
+## Gates formais de release (v3.1.0)
+- Critérios completos de DoD, testes, telemetria, segurança e governança: ver `docs/release_gates_v3_1.md`.
+- A publicação de `3.1.0` fica bloqueada até todos os gates estarem aprovados e a documentação estar sincronizada.
+
 ## Governança operacional
 - Toda ativação/desativação de flag deve ser registrada em changelog operacional.
 - Rollback deve ocorrer por módulo (granular), sem exigir rollback completo da release.

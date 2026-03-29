@@ -17,6 +17,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - Smart Router (P2-04) pillar added to `TRIAD_MASTER_ROADMAP.md`
 - Updated P2-01, P2-02, P2-03, P2-08, P2-13 pillars with Octopus-inspired enhancements
 - 6 new CLI commands planned: `triad providers`, `triad providers detect`, `triad multi-model`, `triad consensus`, `triad dark-factory`, `triad cost-report`
+- Release gates document for v3.1.0 (`docs/release_gates_v3_1.md`) with DoD by module, mandatory testing/coverage, telemetry minimums, security/governance checklist, and SemVer gating policy
+- v3.0 fallback regression suite (`src/__tests__/v3-regression-flow.test.ts`) covering explicit behavior resolution when v3.1 feature flags are OFF
+- Coverage gate configuration in Jest + `npm run test:coverage` script to enforce module-level quality thresholds for new v3.1 areas already implemented
 
 ### Added (v3.0 Architecture)
 - State Graph Engine (`src/state-graph/`) with executable JSON graph, guard validation, and checkpoint triggers (ADR-006)
