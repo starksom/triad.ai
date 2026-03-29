@@ -28,17 +28,21 @@ Establishing the bare minimum requirements for the project to be adopted, reprod
 To eliminate gaps compared to modern frameworks (CrewAI, LangGraph, Ruflo), `triad.ai` must implement the following remaining technical pillars:
 
 ### 1. Agent Execution Engine
-Provide a formal programmatic abstraction for agents (`name`, `role`, `model`, `instructions`, `run()`). Fully support specialized types: **Generator**, **Critic**, **Verifier**, and **Arbiter**.
+Provide a formal programmatic abstraction for agents (`name`, `role`, `model`, `provider`, `instructions`, `skills[]`, `run()`). Fully support specialized types: **Generator**, **Critic**, **Verifier**, and **Arbiter**. Include a **Persona System** with 11 role-specific persona definitions (JSON) mapped to Triad's 3-agent model, inspired by claude-octopus's 32 specialized personas (business-analyst, backend-architect, security-auditor, tdd-orchestrator, code-reviewer, etc.).
 
 ### 2. Multi-Model Simultaneous Execution
-Enable querying multiple models at the exact same time for the same task (e.g., `models=["gpt-4o", "claude-3.5", "llama-3"]`), generating comparative arrays of responses and scores.
+Enable querying multiple models at the exact same time for the same task (e.g., `models=["gpt-4o", "claude-3.5", "llama-3"]`), generating comparative arrays of responses and scores. Support three execution strategies inspired by claude-octopus: **Parallel** (all providers simultaneously for research/discovery), **Sequential** (chain outputs for scoping/design), and **Adversarial** (providers challenge each other for review/validation). Include per-provider cost tracking with tier-aware reporting.
 
 ### 3. Consensus Engine
-Implement configurable strategies to define single sources of truth from multi-model outputs:
-- **Majority Vote**: Simple consensus.
-- **Weighted Score**: Trust-based scoring.
-- **Confidence Ranking**.
-- **Adversarial Debate**: LLMs explicitly debate until a conclusion is reached.
+Implement configurable strategies to define single sources of truth from multi-model outputs, inspired by claude-octopus's 75% consensus quality gate:
+- **Majority Vote**: Simple agreement counting (default threshold: 75%).
+- **Weighted Score**: Trust-based provider weighting with configurable weights.
+- **Confidence Ranking**: Self-reported confidence scoring from each provider.
+- **Adversarial Debate**: Multi-round debate until convergence is reached.
+Consensus is optional per-phase, configurable via `CONTEXT_STATE.md` or CLI flags.
+
+### 4. Smart Router (NEW — Octopus-Inspired)
+Classify incoming tasks into categories (**research**, **design**, **implementation**, **review**) and route to optimal provider+strategy combinations. Maps to claude-octopus's Probe/Grasp/Tangle/Ink taxonomy while preserving Triad's 3-agent model. Routing decisions consider provider availability, cost tier, and historical performance scores.
 
 ### 5. Official Tool Framework (Registry)
 Agents must access external tools reliably via a formal `Tool` object (`name`, `permissions`, `execute()`). Core integrations required: `web_search`, `code_executor`, `filesystem`, `database`, `rag`.
@@ -53,14 +57,14 @@ Evolve `CONTEXT_STATE.md` to support deeper cognitive layers:
 ### 7. Execution Isolation (Sandboxing)
 Prevent agents from causing destructive cross-contamination. Isolate work streams via **Git Worktrees**, temporary subdirectories, or **Docker Containers**.
 
-### 8. Automated Retry & Self-Healing
-If Antigravity (validation) fails, the pipeline must automatically loop back to Codex (implementation) passing the strict failure logs without requiring manual prompt engineering until the test suite passes.
+### 8. Automated Retry & Self-Healing / Dark Factory Mode
+If Antigravity (validation) fails, the pipeline must automatically loop back to Codex (implementation) passing the strict failure logs without requiring manual prompt engineering until the test suite passes. Extended with **Dark Factory Mode** (inspired by claude-octopus): autonomous end-to-end pipeline execution from a markdown specification. Three autonomy levels — **Supervised** (approve each phase), **Semi-autonomous** (intervene on failures only), **Autonomous** (full pipeline without interruption). Includes satisfaction scoring and holdout testing. Human retains final commit authority.
 
 ### 12. Automated Benchmark Engine
 Provide built-in commands to evaluate the local agents against standard academic datasets. Target support for: **HumanEval** (Code), **SWE-bench** (SE), **GAIA** (Reasoning), and **MMLU** (Knowledge).
 
 ### 13. Multi-Backend LLM Adapters
-Abstract API calls behind a `model_adapters/` layer to natively support OpenAI, Anthropic, Google Gemini, Mistral, and local models (e.g., Llama via Ollama). 
+Abstract API calls behind a registry-based `src/providers/` layer to natively support Anthropic (Claude), OpenAI (GPT/Codex), Google Gemini, Mistral, Ollama (local models), and OpenRouter (multi-model gateway). Inspired by claude-octopus's 8-provider orchestration with zero-config bootstrap. Features: auto-detection of installed providers via environment variables and CLI availability, cost-tiered model strategy (`premium` | `standard` | `economy`), and graceful degradation (system works with Claude alone; additional providers enhance capabilities progressively).
 
 ### 14. Security & Governance 
 Implement iron-clad administrative controls for enterprise adoption:
